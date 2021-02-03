@@ -15,19 +15,22 @@
  */
 package com.github.x19990416.mxpaas.module.jdbc;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Component;
+import lombok.Data;
 
-@Component
-@RequiredArgsConstructor
-public class JdbcQuery{
+import javax.persistence.*;
+import java.io.Serializable;
 
-	private final JdbcTemplate jdbcTemplate;
 
-	public <T> T execute(Class<T> retObject,Object o){
-		System.out.println("xxxxxxxxxxxxx");
-		return null;
+@Entity
+@Data
+@Table(name = "sys_user")
+public class User implements Serializable {
+  @Id
+  @Column(name = "user_id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+  @Column(name = "te")
+  private String te;
 
-	}
+
 }

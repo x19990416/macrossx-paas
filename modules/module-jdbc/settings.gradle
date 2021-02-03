@@ -8,3 +8,5 @@
  */
 
 rootProject.name = 'module-jdbc'
+
+include ':modules:module-common'

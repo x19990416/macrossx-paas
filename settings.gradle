@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'macrossx-paas'
-include ':modules:module-auth',':modules:module-auth-user',':modules:module-jpa',':applications:test-application'
+include ':modules:module-auth',':modules:module-jdbc',':modules:module-common'

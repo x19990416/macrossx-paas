@@ -5,12 +5,29 @@
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.8/448003bc1b234aac04b58e27d7755c12c3ec4236/lombok-1.18.8.jar" />
-          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.4.1.Final/a177f0daf39b807f19906fc3a7c6af8985bd8c4a/mapstruct-processor-1.4.1.Final.jar" />
+          <entry name="$USER_HOME$/.sdkman/candidates/gradle/6.8.1/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.4.1.Final/a177f0daf39b807f19906fc3a7c6af8985bd8c4a/mapstruct-processor-1.4.1.Final.jar" />
+          <entry name="$USER_HOME$/.sdkman/candidates/gradle/6.8.1/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.8/448003bc1b234aac04b58e27d7755c12c3ec4236/lombok-1.18.8.jar" />
         </processorPath>
-        <module name="macrossx-paas.modules.module-jpa.main" />
+        <module name="macrossx-paas.modules.module-jdbc.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="macrossx-paas.applications.main" target="11" />
+      <module name="macrossx-paas.applications.test" target="11" />
+      <module name="macrossx-paas.applications.test-application.main" target="11" />
+      <module name="macrossx-paas.applications.test-application.test" target="11" />
+      <module name="macrossx-paas.modules.module-auth-user.main" target="11" />
+      <module name="macrossx-paas.modules.module-auth-user.test" target="11" />
+      <module name="macrossx-paas.modules.module-jpa.main" target="11" />
+      <module name="macrossx-paas.modules.module-jpa.test" target="11" />
+      <module name="macrossx-paas.moules.-.main" target="11" />
+      <module name="macrossx-paas.moules.-.test" target="11" />
+      <module name="macrossx-paas.moules.main" target="11" />
+      <module name="macrossx-paas.moules.module-.main" target="11" />
+      <module name="macrossx-paas.moules.module-.test" target="11" />
+      <module name="macrossx-paas.moules.module-jdbc.main" target="11" />
+      <module name="macrossx-paas.moules.module-jdbc.test" target="11" />
+      <module name="macrossx-paas.moules.test" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
