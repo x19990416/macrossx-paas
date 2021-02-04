@@ -17,7 +17,6 @@ package com.github.x19990416.mxpaas.common.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.http.HttpStatus;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -27,6 +26,11 @@ public class BadRequestException extends RuntimeException {
 
   private Integer status = BAD_REQUEST.value();
 
+  public BadRequestException(Throwable throwable,Integer status) {
+    super(throwable);
+    this.status = status;
+  }
+
   public BadRequestException(String msg) {
     super(msg);
   }
@@ -35,9 +39,9 @@ public class BadRequestException extends RuntimeException {
     super(msg);
     this.status = status;
   }
-  public BadRequestException(String msg,Throwable throwable,Integer status){
-      super(msg,throwable);
-      this.status = status;
-  }
 
+  public BadRequestException(String msg, Throwable throwable, Integer status) {
+    super(msg, throwable);
+    this.status = status;
+  }
 }

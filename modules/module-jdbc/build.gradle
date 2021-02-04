@@ -21,7 +21,9 @@ dependencies {
     api group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: springbootStarterVersion
     api group: 'mysql', name: 'mysql-connector-java', version: '8.0.23'
     api group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
-    implementation project(':modules:module-common')
+    api group: 'com.alibaba.druid', name: 'druid-wrapper', version: '0.2.9'
+
+    api project(':modules:module-common')
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }

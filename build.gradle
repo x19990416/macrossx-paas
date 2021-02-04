@@ -24,11 +24,12 @@ allprojects {
     dependencies {
         implementation 'org.projectlombok:lombok:1.18.8'
         implementation 'com.google.guava:guava:30.1-jre'
-        implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha5'
+        implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
         implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
         implementation group: 'io.swagger.core.v3', name: 'swagger-annotations', version: '2.1.6'
         implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.4.1.Final'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+        implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.75'
         annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
         annotationProcessor 'org.projectlombok:lombok:1.18.8'
     }

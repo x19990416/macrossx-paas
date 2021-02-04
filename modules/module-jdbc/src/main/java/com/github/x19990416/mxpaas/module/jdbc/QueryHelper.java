@@ -16,104 +16,119 @@
 package com.github.x19990416.mxpaas.module.jdbc;
 
 import com.github.x19990416.mxpaas.common.exception.BadRequestException;
-import com.google.common.collect.Maps;
-import lombok.Data;
-import lombok.experimental.Accessors;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 @Slf4j
 public class QueryHelper {
+  private static final String _SQL_INISERT = "insert into {0} ({1}) values ({2})";
+  // select {*} from {table} {where} {limit}
+  private static final String _SQL_SELECT = "select {0} from {1} {2}";
+  // update {table} set {key=?} {where}
+  private static final String _SQL_UPDATE = "update {0} set {1} {2}";
+  private static final String COMMA = ",";
 
-  /**
-   * @param entity
-   * @param includeNull
-   * @return
-   * @throws BadRequestException
-   */
-  public static Object[] toSelect(
-      Object entity, Criteria criteria, Set<String> filter, boolean includeNull)
-      throws BadRequestException {
-    QueryParams queryParams = fetchSQLInfo(entity, criteria, filter, includeNull);
-    Map<String, Object> columnInfo = queryParams.getColumns();
-    if (StringUtils.isEmpty(queryParams.getTable()) || !includeNull && columnInfo.isEmpty()) {
-      throw new BadRequestException("没有可执行的参数", 500);
-    }
-    StringBuilder sql = new StringBuilder("select ");
-    if (CollectionUtils.isEmpty(columnInfo)) {
-      sql.append("* ");
-    } else {
-      filter.forEach(e -> sql.append(e).append(","));
-    }
-    sql.deleteCharAt(sql.length() - 1)
-        .append(" from ")
-        .append(queryParams.getTable());
-    if(queryParams.getCriteria()!=null){}
-    columnInfo.keySet().forEach(e -> sql.append(e).append("=?"));
-    for (String column : columnInfo.keySet()) {
-      sql.append(column).append(",");
-    }
-    sql.deleteCharAt(sql.length() - 1);
-  }
-
-  /**
-   * @param entity
-   * @param includeNull 是否包含null
-   * @return QueryParams
-   */
-  private static QueryParams fetchSQLInfo(
-      Object entity, Criteria criteria, Set<String> filter, boolean includeNull) {
+  public static Map<String, List<Object>> toInsert(Object entity, boolean includeNull) {
     try {
-      Table table = entity.getClass().getDeclaredAnnotation(Table.class);
-      if (Objects.isNull(table)) throw new BadRequestException("annotation not found", 500);
-      String tableName = table.name();
-      Map<String, Object> columns = Maps.newConcurrentMap();
+      String tableName = entity.getClass().getDeclaredAnnotation(Table.class).name();
+      StringBuilder builder = new StringBuilder();
+      StringBuilder values = new StringBuilder();
+      List<Object> paramsValue = Lists.newArrayList();
       for (Field field : entity.getClass().getDeclaredFields()) {
-        Column column = field.getAnnotation(Column.class);
-        boolean isAccess = field.canAccess(entity);
-        field.setAccessible(true);
-        if (!Objects.isNull(column) && (includeNull & Objects.isNull(field.get(entity)))) {
-          columns.put(column.name(), field.get(entity));
-          if (CollectionUtils.isEmpty(filter) && filter.contains(field.getName())) {
-            filter.remove(field.getName());
-            filter.add(column.name());
+        Column column = field.getDeclaredAnnotation(Column.class);
+        if (column != null) {
+          boolean canAccess = field.canAccess(entity);
+          field.setAccessible(true);
+          if (includeNull || Objects.nonNull(field.get(entity))) {
+            paramsValue.add(field.get(entity));
+            builder.append(column.name()).append(COMMA);
+            values.append("?").append(COMMA);
           }
-          if (!Objects.isNull(criteria) && criteria.getConditions().containsKey(field.getName())) {
-            String condition = criteria.getConditions().remove(field.getName());
-            criteria.getConditions().put(column.name(), condition);
-          }
+          field.setAccessible(canAccess);
         }
-        field.setAccessible(isAccess);
       }
-      return new QueryParams()
-          .setColumnFilter(filter)
-          .setTable(tableName)
-          .setColumns(columns)
-          .setCriteria(criteria);
+      return Map.of(
+          MessageFormat.format(
+              _SQL_INISERT,
+              tableName,
+              builder.deleteCharAt(builder.length() - 1),
+              values.deleteCharAt(values.length() - 1)),
+          paramsValue);
     } catch (IllegalAccessException e) {
-      throw new BadRequestException(e.getLocalizedMessage(), e, 500);
+      throw new BadRequestException(e, 500);
     }
   }
 
-  public static void main(String... s) {
-    new Criteria();
+  public static Map<String, List<Object>> toSelect(
+      Object entity, CriteriaBuilder criteria, String[] selectFields) {
+    try {
+      String tableName = entity.getClass().getDeclaredAnnotation(Table.class).name();
+      StringBuilder columnBuilder = new StringBuilder();
+      if (Objects.isNull(selectFields) || selectFields.length == 0) {
+        columnBuilder.append("* ");
+      } else {
+        for (String field : selectFields) {
+          columnBuilder
+              .append(
+                  entity
+                      .getClass()
+                      .getDeclaredField(field)
+                      .getDeclaredAnnotation(Column.class)
+                      .name())
+              .append(COMMA);
+        }
+      }
+      List<Object> paramValues = criteria.getFields(entity);
+      return Map.of(
+          MessageFormat.format(
+              _SQL_SELECT,
+              columnBuilder.deleteCharAt(columnBuilder.length() - 1).toString(),
+              tableName,
+              Objects.isNull(criteria) ? "" : criteria.build()),
+          Objects.isNull(criteria) ? Lists.newArrayList() : criteria.getFields(entity));
+    } catch (NoSuchFieldException e) {
+      throw new BadRequestException(e, 500);
+    }
   }
 
-  @Data
-  @Accessors(chain = true)
-  private static class QueryParams {
-    private String table;
-    private Map<String, Object> columns;
-    private Set<String> columnFilter;
-    private Criteria criteria;
+  public Map<String, List<Object>> toUpdate(
+      @NotNull Object newEntity,
+      CriteriaBuilder criteria,
+      @NotNull Object oldEntity,
+      boolean includeNull) {
+    try {
+      StringBuilder setBuilder = new StringBuilder();
+      String tableName = newEntity.getClass().getDeclaredAnnotation(Table.class).name();
+      List<Object> paramsValues = Lists.newArrayList();
+      for (Field field : newEntity.getClass().getDeclaredFields()) {
+        if (includeNull == false && Objects.isNull(field.get(newEntity))) continue;
+        boolean canAccess = field.canAccess(newEntity);
+        setBuilder.append(field.getDeclaredAnnotation(Column.class).name()).append("=?,");
+        field.setAccessible(true);
+        paramsValues.add(field.get(newEntity));
+        field.setAccessible(canAccess);
+      }
+      paramsValues.addAll(
+          Objects.isNull(criteria) ? Lists.newArrayList() : criteria.getFields(oldEntity));
+      return Map.of(
+          MessageFormat.format(
+              _SQL_UPDATE,
+              tableName,
+              setBuilder.deleteCharAt(setBuilder.length() - 1).toString(),
+              Objects.isNull(criteria) ? "" : criteria.build()),
+          paramsValues);
+    } catch (java.lang.IllegalAccessException e) {
+      log.error("", e);
+      throw new BadRequestException(e, 500);
+    }
   }
 }

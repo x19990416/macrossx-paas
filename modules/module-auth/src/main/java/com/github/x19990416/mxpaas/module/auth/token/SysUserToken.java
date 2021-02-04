@@ -16,14 +16,16 @@
 package com.github.x19990416.mxpaas.module.auth.token;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.apache.shiro.authc.UsernamePasswordToken;
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SysUserToken extends UsernamePasswordToken {
   @Getter
   public static enum LoginType {
     USER_PASSWORD("user_passord_realm"),
-    MOBIE("mobile_realm");
+    USER_MOBIE("user_mobile_realm");
     private String type;
 
     LoginType(String type) {

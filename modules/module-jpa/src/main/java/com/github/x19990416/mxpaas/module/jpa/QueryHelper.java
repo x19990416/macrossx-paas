@@ -1,29 +1,16 @@
-/*
- *  Copyright (c) 2020-2021 Guo Limin
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-package com.github.x19990416.mxpaas.module.jpa;
+/** create by Guo Limin on 2021/1/30. */
+package com.github.x19990416.mxpaas.admin.common.utils;
 
-import com.github.x19990416.mxpaas.module.jpa.annotation.Query;
-import com.google.common.collect.Lists;
+import com.github.x19990416.mxpaas.admin.common.annotation.DataPermission;
+import com.github.x19990416.mxpaas.admin.common.annotation.Query;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.criteria.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,10 +21,26 @@ public class QueryHelper {
     if (query == null) {
       return cb.and(list.toArray(new Predicate[0]));
     }
+    // 数据权限验证
+    DataPermission permission = query.getClass().getAnnotation(DataPermission.class);
+    if (permission != null) {
+      // 获取数据权限
+      List<Long> dataScopes = SecurityUtils.getCurrentUserDataScope();
+      if (!CollectionUtils.isEmpty(dataScopes)) {
+        if (Strings.isNotBlank(permission.joinName())
+            && Strings.isNotBlank(permission.fieldName())) {
+          Join join = root.join(permission.joinName(), JoinType.LEFT);
+          list.add(getExpression(permission.fieldName(), join, root).in(dataScopes));
+        } else if (Strings.isBlank(permission.joinName())
+            && Strings.isNotBlank(permission.fieldName())) {
+          list.add(getExpression(permission.fieldName(), null, root).in(dataScopes));
+        }
+      }
+    }
     try {
       List<Field> fields = getAllFields(query.getClass(), new ArrayList<>());
       for (Field field : fields) {
-        boolean accessible = field.isAccessible();
+        boolean accessible = field.trySetAccessible();
         if (accessible == false)
           // 设置对象的访问权限，保证对private的属性的访
           field.setAccessible(true);
@@ -46,7 +49,7 @@ public class QueryHelper {
           String propName = q.propName();
           String joinName = q.joinName();
           String blurry = q.blurry();
-          String attributeName = StringUtils.isBlank(propName) ? field.getName() : propName;
+          String attributeName = isBlank(propName) ? field.getName() : propName;
           Class<?> fieldType = field.getType();
           Object val = field.get(query);
           if (val == null || "".equals(val)) {
@@ -54,7 +57,7 @@ public class QueryHelper {
           }
           Join join = null;
           // 模糊多字段
-          if (StringUtils.isNotEmpty(blurry)) {
+          if (Strings.isNotEmpty(blurry)) {
             List<Predicate> orPredicate = new ArrayList<>();
             for (String s : blurry.split(",")) {
               orPredicate.add(cb.like(root.get(s).as(String.class), "%" + val.toString() + "%"));
@@ -63,7 +66,7 @@ public class QueryHelper {
             list.add(cb.or(orPredicate.toArray(p)));
             continue;
           }
-          if (StringUtils.isNotEmpty(joinName)) {
+          if (Strings.isNotEmpty(joinName)) {
             String[] joinNames = joinName.split(">");
             for (String name : joinNames) {
               switch (q.join()) {
@@ -170,13 +173,13 @@ public class QueryHelper {
         field.setAccessible(accessible);
       }
     } catch (Exception e) {
-
       log.error(e.getMessage(), e);
     }
     int size = list.size();
     return cb.and(list.toArray(new Predicate[size]));
   }
 
+  @SuppressWarnings("unchecked")
   private static <T, R> Expression<T> getExpression(String attributeName, Join join, Root<R> root) {
     if (null != join) {
       return join.get(attributeName);
@@ -185,9 +188,22 @@ public class QueryHelper {
     }
   }
 
+  private static boolean isBlank(final CharSequence cs) {
+    int strLen;
+    if (cs == null || (strLen = cs.length()) == 0) {
+      return true;
+    }
+    for (int i = 0; i < strLen; i++) {
+      if (!Character.isWhitespace(cs.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   public static List<Field> getAllFields(Class clazz, List<Field> fields) {
     if (clazz != null) {
-      fields.addAll(Lists.newArrayList(clazz.getDeclaredFields()));
+      fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
       getAllFields(clazz.getSuperclass(), fields);
     }
     return fields;
