@@ -15,17 +15,35 @@
  */
 package com.github.x19990416.mxpaas;
 
+import com.github.x19990416.mxpaas.common.utils.SpringContextHolder;
+import com.github.x19990416.mxpaas.module.auth.annotation.AnonymousGetMapping;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+@EnableAsync
 @SpringBootApplication
 @Getter
+@RestController
+@RequestMapping("/xbbb/a")
 public class App {
-	@Autowired
-	private UserRepository userRepository;
-	public static void main(String...s){
-		System.out.println(SpringApplication.run(App.class).getBean(App.class).getUserRepository().findByUsername("admin"));
-	}
+
+  public static void main(String... s) {
+    SpringApplication.run(App.class);
+  }
+
+
+  @Bean
+  public SpringContextHolder springContextHolder() {
+    return new SpringContextHolder();
+  }
+  @AnonymousGetMapping(value = "/downloadaaa")
+  public void download(HttpServletResponse response) throws Exception {
+    System.out.println("123");
+  }
 }

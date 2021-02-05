@@ -21,5 +21,8 @@ dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
     api group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springbootStarterVersion
+    api group: 'com.alibaba.druid', name: 'druid-wrapper', version: '0.2.9'
+    api group: 'mysql', name: 'mysql-connector-java', version: '8.0.23'
+
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
 }

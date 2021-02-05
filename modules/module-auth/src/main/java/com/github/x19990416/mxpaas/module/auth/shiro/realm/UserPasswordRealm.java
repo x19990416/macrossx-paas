@@ -13,13 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.realm;
+package com.github.x19990416.mxpaas.module.auth.shiro.realm;
 
 import com.github.x19990416.mxpaas.module.auth.service.AuthUserService;
-import com.github.x19990416.mxpaas.module.auth.token.SysUserToken;
+import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;

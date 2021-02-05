@@ -1,4 +1,5 @@
 /** create by Guo Limin on 2021/1/30. */
+/*
 package com.github.x19990416.mxpaas.admin.common.utils;
 
 import com.github.x19990416.mxpaas.admin.common.annotation.DataPermission;
@@ -209,3 +210,4 @@ public class QueryHelper {
     return fields;
   }
 }
+*/

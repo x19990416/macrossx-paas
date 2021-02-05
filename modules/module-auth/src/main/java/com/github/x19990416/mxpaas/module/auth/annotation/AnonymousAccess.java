@@ -13,16 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.common.config;
+package com.github.x19990416.mxpaas.module.auth.annotation;
 
-import com.github.x19990416.mxpaas.common.utils.SpringContextHolder;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.lang.annotation.*;
 
-@Configuration
-public class BeanConfig {
-	@Bean
-	public SpringContextHolder springContextHolder() {
-		return new SpringContextHolder();
-	}
+@Inherited
+@Documented
+@Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AnonymousAccess {
 }

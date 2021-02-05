@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.token;
+package com.github.x19990416.mxpaas.module.auth.shiro.token;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

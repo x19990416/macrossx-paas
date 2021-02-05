@@ -15,7 +15,7 @@
  */
 package com.github.x19990416.mxpaas.module.auth;
 
-import com.github.x19990416.mxpaas.module.auth.token.SysUserToken;
+import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import com.google.common.collect.Maps;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;

@@ -40,14 +40,6 @@ public class AuthUser extends BaseEntity implements Serializable {
   @Schema(name = "ID", hidden = true)
   private Long id;
 
-  @ManyToMany
-  @Schema(name = "用户角色")
-  @JoinTable(
-      name = "sys_users_roles",
-      joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
-      inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
-  private Set<Role> roles;
-
   @NotBlank
   @Column(unique = true)
   @Schema(name = "用户名称")
