@@ -23,7 +23,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.crazycake/shiro-redis
     //api group: 'org.crazycake', name: 'shiro-redis', version: '3.3.1'
     api group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: springbootStarterVersion
-
+    api group: 'com.github.whvcse', name: 'easy-captcha', version: '1.6.2'
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     api project(':modules:module-jpa')
     api project(':modules:module-common')
