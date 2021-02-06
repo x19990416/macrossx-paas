@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthUserServiceImpl implements AuthUserService {
   private final AuthUserRepository authUserRepository;
+
   @Override
   public AuthUser getUserByUsername(String username) {
     return authUserRepository.findByUsername(username);

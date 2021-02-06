@@ -15,7 +15,6 @@
  */
 package com.github.x19990416.mxpaas.common.config;
 
-import com.github.x19990416.mxpaas.common.utils.SpringContextHolder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,5 +24,4 @@ public class SysConfig {
   public RsaProperties rsaProperties() {
     return new RsaProperties();
   }
-
 }

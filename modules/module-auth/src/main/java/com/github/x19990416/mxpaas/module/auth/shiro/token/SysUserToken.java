@@ -18,9 +18,14 @@ package com.github.x19990416.mxpaas.module.auth.shiro.token;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.apache.shiro.authc.UsernamePasswordToken;
+
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
 public class SysUserToken extends UsernamePasswordToken {
   @Getter
   public static enum LoginType {
@@ -38,9 +43,12 @@ public class SysUserToken extends UsernamePasswordToken {
 
   private LoginType loginType;
 
+  public SysUserToken() {}
+
   public SysUserToken(String username, String password) {
     super(username, password);
     loginType = LoginType.USER_PASSWORD;
+
   }
 
   public SysUserToken(LoginType logintype, String username, String password, Object extra) {

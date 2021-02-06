@@ -1,7 +1,7 @@
 /** create by Guo Limin on 2021/1/30. */
 package com.github.x19990416.mxpaas.common.exception;
 
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.StringUtils;
 
 public class EntityNotFoundException extends RuntimeException {
 

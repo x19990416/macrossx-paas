@@ -15,11 +15,9 @@
  */
 package com.github.x19990416.mxpaas.module.auth.shiro;
 
-import com.github.x19990416.mxpaas.common.config.RsaProperties;
-import com.github.x19990416.mxpaas.common.utils.SpringContextHolder;
 import com.github.x19990416.mxpaas.module.auth.SysUserModularRealmAuthenticator;
-import com.github.x19990416.mxpaas.module.auth.annotation.AnonymousAccess;
-import com.google.common.collect.Lists;
+import com.github.x19990416.mxpaas.module.auth.shiro.filter.SysAuthenFilter;
+import com.github.x19990416.mxpaas.module.auth.shiro.realm.UserPasswordRealm;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -30,12 +28,10 @@ import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.context.annotation.Lazy;
 
-import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -44,8 +40,7 @@ import java.util.Map;
 public class ShiroConfig {
   private final ShiroProperties shiroProperties;
   private final ShiroRedisCacheManager shiroRedisCacheManager;
-  private final ApplicationContext applicationContext;
-
+  private final UserPasswordRealm userPasswordRealm;
 
   @Bean
   public SecurityManager securityManager() {
@@ -55,22 +50,22 @@ public class ShiroConfig {
     // 2. cache
     securityManager.setCacheManager(shiroRedisCacheManager);
     // 3. realm
-
+    securityManager.setRealm(userPasswordRealm);
     // 4. session
 
-    securityManager.setAuthenticator(sysUserModularRealmAuthenticator());
-    // RequestMappingHandlerMapping:wq
+    //securityManager.setAuthenticator(sysUserModularRealmAuthenticator());
+    // RequestMappingHandlerMapping:
 
     return securityManager;
   }
 
   @Bean
+  @Lazy(value = true)
   public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
     ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
     shiroFilterFactoryBean.setSecurityManager(securityManager);
-
     shiroFilterFactoryBean.setFilterChainDefinitionMap(genFilterChainMap());
-
+    shiroFilterFactoryBean.getFilters().put("authc",sysAuthenFilter());
     return shiroFilterFactoryBean;
   }
 
@@ -79,23 +74,10 @@ public class ShiroConfig {
     // 置免认证 url
     if (!StringUtils.isEmpty(shiroProperties.getAnonUrl())) {
       for (String url : shiroProperties.getAnonUrl().split(",")) {
-        filterChainMap.put(url, "anon");
+        // filterChainMap.put(url, "anon");
       }
     }
-    List<String> anonUrls = Lists.newArrayList();
-    applicationContext.getBean(RequestMappingHandlerMapping.class)
-        .getHandlerMethods()
-        .forEach(
-            (requestMappingInfo, handlerMethod) -> {
-              if (handlerMethod.getMethodAnnotation(AnonymousAccess.class) != null) {
-                requestMappingInfo
-                    .getPatternsCondition()
-                    .getPatterns()
-                    .forEach(anonUrls::add);
-              }
-            });
-    System.out.println(anonUrls);
-    filterChainMap.put("/xbbb/a/downloadaaa","anon");
+    filterChainMap.put("/login","anon");
     filterChainMap.put("/**", "authc");
     System.err.println(filterChainMap);
     return filterChainMap;
@@ -119,4 +101,10 @@ public class ShiroConfig {
 
     return sysUserModularRealmAuthenticator;
   }
+
+  @Bean("SysAuthenFilter")
+  public SysAuthenFilter sysAuthenFilter() {
+    return new SysAuthenFilter();
+  }
+
 }

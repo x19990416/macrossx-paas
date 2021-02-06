@@ -17,6 +17,14 @@ package com.github.x19990416.mxpaas.module.auth.repository;
 
 import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Set;
 
 public interface AuthRoleRepository extends JpaRepository<AuthRole,Long> {
+    @Query(value = "SELECT r.* FROM sys_role r, sys_users_roles u WHERE " +
+            "r.role_id = u.role_id AND u.user_id = ?1",nativeQuery = true)
+    List<AuthRole> findByUserId(Long id);
+
 }

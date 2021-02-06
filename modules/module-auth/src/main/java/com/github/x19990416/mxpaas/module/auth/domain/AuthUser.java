@@ -18,6 +18,7 @@ package com.github.x19990416.mxpaas.module.auth.domain;
 import com.github.x19990416.mxpaas.module.jpa.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -31,6 +32,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "sys_user")
+@EqualsAndHashCode(callSuper = false)
 public class AuthUser extends BaseEntity implements Serializable {
 
   @Id
