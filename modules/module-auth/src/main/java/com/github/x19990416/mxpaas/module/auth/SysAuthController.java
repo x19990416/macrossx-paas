@@ -3,7 +3,9 @@ package com.github.x19990416.mxpaas.module.auth;
 
 import com.github.x19990416.mxpaas.common.utils.RedisUtil;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
+import com.github.x19990416.mxpaas.module.auth.domain.dto.AuthUserDto;
 import com.github.x19990416.mxpaas.module.auth.domain.dto.UserPwdLogin;
+import com.github.x19990416.mxpaas.module.auth.service.AuthRoleService;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import com.github.x19990416.mxpaas.module.auth.util.JwtUtil;
 import com.wf.captcha.ArithmeticCaptcha;
@@ -26,16 +28,16 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class SysAuthController {
   private final RedisUtil redisUtil;
-
+  private final AuthRoleService roleService;
   @AnonymousAccess
   @PostMapping("/login/pwd")
-  public ResponseEntity<Map<String, Object>> userPwdLogin(
+  public ResponseEntity<AuthUserDto> userPwdLogin(
       @Validated @RequestBody UserPwdLogin login) {
     Subject subject = SecurityUtils.getSubject();
     SysUserToken sysUserToken = new SysUserToken(login.getUsername(), login.getPassword());
     subject.login(sysUserToken);
     String jwtToken = JwtUtil.sign(login.getUsername());
-    return ResponseEntity.ok(Map.of("token", jwtToken));
+    return ResponseEntity.ok(new AuthUserDto().setToken(jwtToken).setRoles(roleService.getUserRoleLevels((AuthUser)subject.getPrincipal())));
   }
   @PostMapping("/info")
   public ResponseEntity<AuthUser> info() {
