@@ -11,12 +11,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class AuthRoleServiceImpl implements AuthRoleService {
     private final AuthRoleRepository authRoleRepository;
     @Override
-    public List<AuthRole> getUserRoles(AuthUser authUser) {
-        return authRoleRepository.findByUserId(authUser.getId());
+    public Set<String> getUserRoleLevels(AuthUser authUser) {
+    return authRoleRepository.findByUserId(authUser.getId()).stream()
+        .map(AuthRole::getLevel)
+        .map(String::valueOf)
+        .collect(Collectors.toSet());
     }
 }

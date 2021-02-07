@@ -7,7 +7,8 @@ import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
 
 import java.util.List;
+import java.util.Set;
 
 public interface AuthRoleService {
-    public List<AuthRole> getUserRoles(AuthUser authUser);
+    public Set<String> getUserRoleLevels(AuthUser authUser);
 }

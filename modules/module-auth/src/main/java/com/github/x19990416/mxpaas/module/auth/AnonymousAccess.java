@@ -13,17 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.common.config;
+package com.github.x19990416.mxpaas.module.auth;
 
-import com.github.x19990416.mxpaas.common.utils.RedisUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.lang.annotation.*;
 
-@Configuration
-public class SysConfig {
-  @Bean
-  public RsaProperties rsaProperties() {
-    return new RsaProperties();
-  }
-
+@Inherited
+@Documented
+@Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AnonymousAccess {
 }

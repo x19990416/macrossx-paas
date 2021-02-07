@@ -18,17 +18,17 @@ package com.github.x19990416.mxpaas.module.auth.shiro.realm;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
 import com.github.x19990416.mxpaas.module.auth.service.AuthRoleService;
 import com.github.x19990416.mxpaas.module.auth.service.AuthUserService;
+import com.github.x19990416.mxpaas.module.auth.shiro.SysCredentialsMatcher;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 public class UserPasswordRealm extends AuthorizingRealm {
   private final AuthUserService authUserService;
   private final AuthRoleService authRoleService;
+
 
   public String getName() {
     return SysUserToken.LoginType.USER_PASSWORD.name();
@@ -54,10 +55,7 @@ public class UserPasswordRealm extends AuthorizingRealm {
   protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
     AuthUser authUser = (AuthUser) principals.getPrimaryPrincipal();
-    authorizationInfo.addRoles(
-        authRoleService.getUserRoles(authUser).stream()
-            .map(e -> e.getLevel().toString())
-            .collect(Collectors.toList()));
+    authorizationInfo.addRoles(authRoleService.getUserRoleLevels(authUser));
     return authorizationInfo;
   }
 
@@ -67,9 +65,14 @@ public class UserPasswordRealm extends AuthorizingRealm {
       throws AuthenticationException {
     UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
     AuthUser authUser = authUserService.getUserByUsername(usernamePasswordToken.getUsername());
-    if(authUser == null){
+    if (authUser == null) {
       throw new AccountException("用户名不正确");
     }
-    return  new SimpleAuthenticationInfo(authUser.getUsername(), authUser.getPassword(), getName());
+    return new SimpleAuthenticationInfo(authUser.getUsername(), authUser.getPassword(), getName());
+  }
+
+  @Override
+  public CredentialsMatcher getCredentialsMatcher() {
+    return new SysCredentialsMatcher();
   }
 }

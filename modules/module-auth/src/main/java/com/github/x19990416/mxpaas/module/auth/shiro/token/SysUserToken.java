@@ -15,19 +15,21 @@
  */
 package com.github.x19990416.mxpaas.module.auth.shiro.token;
 
+import com.github.x19990416.mxpaas.module.auth.shiro.SysCredentialsMatcher;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.apache.shiro.authc.UsernamePasswordToken;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = false)
 @ToString(callSuper = true)
 public class SysUserToken extends UsernamePasswordToken {
-  @Getter
+    @Getter
   public static enum LoginType {
     USER_PASSWORD("user_passord_realm"),
     USER_MOBIE("user_mobile_realm");
@@ -43,7 +45,10 @@ public class SysUserToken extends UsernamePasswordToken {
 
   private LoginType loginType;
 
-  public SysUserToken() {}
+  public SysUserToken() {
+
+    super();
+  }
 
   public SysUserToken(String username, String password) {
     super(username, password);
@@ -56,4 +61,5 @@ public class SysUserToken extends UsernamePasswordToken {
     this.loginType = loginType;
     this.extra = extra;
   }
+
 }

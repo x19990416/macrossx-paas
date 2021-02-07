@@ -15,6 +15,7 @@
  */
 package com.github.x19990416.mxpaas.common.utils;
 
+import lombok.Data;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import javax.crypto.Cipher;
@@ -25,14 +26,19 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public class RsaUtils {
-
-	private static final String SRC = "eladmin";
+	public static String privateKey="MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAICNKjStPGwYOtOlzOczCmfwgoVcMdpCOTAqJSFMCQDfBNMcnIE218Y8u9gi8Hqj1gTCiiYZT+oYoAeMYjLgUng8rxhlkEks+7U1saL9/oHHjv4UT37KFxHEs3bFeHW7pQWT1GHGJyLWdovQpshdbGgClUWq7LbH6yP9UmZx627TAgMBAAECgYBGueQDsWAx9K7A7VKrzTgncXrOFqhS9eZy6m0dQbEeapVD9VTh/qN+rMGIq8h1IRjJ66KITZrbKAs7u+/3H9YfBdbn0iJajsBbIQzipRKXHmaJT15A5hEs6Nz2EO6dcLaZGTUyIlVTMBC28jzZhAwW75kmUkdtKw27FTdtDW/YiQJBAOVr/TQrnkdzXjCqkKQmvbF31Ul3h0F4ie/6RajdSK5jK9/Ue7WHNift8kzFYw4TiSA/OPMDCPadSKIsF1bEcf0CQQCPcaQkXR2Q3DKELdii641L8gdx6Bpgp1A0BM5TLZKZUOrr85s8VAfD10tnGVoAJqHQMgLlcF/hAK4oncMs+xUPAkB2a3tTBoC4mNAxhpkKYgTgKd6qAUyLetCYUjLKqw3tFbt72Y3RcW1+xs+e2PP8PBE31+ppZVOnGCB5tRCG9PdxAkA4hJAl+8JQd1I4HlBDMQhFKiGg0dDC0GmbdWFOCKDAY8+MFDnP9VPx5/w/rQ93C8Gp5GqbuEEuyDPWsQJb0LolAkBLp84B98aC6ZQZaFKTGfL5U7OcWBK2EJazzjUqJAvD3+SB+wyvnhfJyS9V87sJ3ktVU452F0XGi2WCpitmy63b";
+	private static String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCAjSo0rTxsGDrTpcznMwpn8IKFXDHaQjkwKiUhTAkA3wTTHJyBNtfGPLvYIvB6o9YEwoomGU/qGKAHjGIy4FJ4PK8YZZBJLPu1NbGi/f6Bx47+FE9+yhcRxLN2xXh1u6UFk9Rhxici1naL0KbIXWxoApVFquy2x+sj/VJmcetu0wIDAQAB";
+	private static final String SRC = "macrossx";
 
 	public static void main(String[] args) throws Exception {
+
 		System.out.println("\n");
-		RsaKeyPair keyPair = generateKeyPair();
+		RsaKeyPair keyPair = new RsaKeyPair(publicKey,privateKey);
 		System.out.println("公钥：" + keyPair.getPublicKey());
 		System.out.println("私钥：" + keyPair.getPrivateKey());
+		System.out.println("公钥揭秘:"+decryptByPrivateKey(privateKey,"PSUEwUio2W8j0sXX6z7K3qqWgL4P+0JuQ42nQQyD9VsytZCwu1CHP6BzOWo0dzySH8XeOuOOsBjPrPC8mKpLoK9JEX+WhCGp6KGLRoNZjGl5pMqhAa1uDwl1sDELSKginzFaKMQjTOSObsOrjFnsWldgDoiuxs5J+zLt4J85N0E="));
+
+
 		System.out.println("\n");
 		test1(keyPair);
 		System.out.println("\n");
@@ -169,6 +175,7 @@ public class RsaUtils {
 	/**
 	 * RSA密钥对对象
 	 */
+	@Data
 	public static class RsaKeyPair {
 
 		private final String publicKey;
@@ -188,5 +195,7 @@ public class RsaUtils {
 		}
 
 	}
+
+
 }
 

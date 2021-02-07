@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -30,7 +31,6 @@ import org.apache.shiro.web.servlet.SimpleCookie;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 
 import java.util.Map;
 
@@ -53,19 +53,18 @@ public class ShiroConfig {
     securityManager.setRealm(userPasswordRealm);
     // 4. session
 
-    //securityManager.setAuthenticator(sysUserModularRealmAuthenticator());
+    // securityManager.setAuthenticator(sysUserModularRealmAuthenticator());
     // RequestMappingHandlerMapping:
 
     return securityManager;
   }
 
   @Bean
-  @Lazy(value = true)
   public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
     ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
     shiroFilterFactoryBean.setSecurityManager(securityManager);
     shiroFilterFactoryBean.setFilterChainDefinitionMap(genFilterChainMap());
-    shiroFilterFactoryBean.getFilters().put("authc",sysAuthenFilter());
+    shiroFilterFactoryBean.getFilters().put("authc", sysAuthenFilter());
     return shiroFilterFactoryBean;
   }
 
@@ -77,10 +76,15 @@ public class ShiroConfig {
         // filterChainMap.put(url, "anon");
       }
     }
-    filterChainMap.put("/login","anon");
+    filterChainMap.put("/login", "anon");
     filterChainMap.put("/**", "authc");
     System.err.println(filterChainMap);
     return filterChainMap;
+  }
+
+  @Bean
+  public SysCredentialsMatcher getSysCredentialsMatcher() {
+    return new SysCredentialsMatcher();
   }
 
   private CookieRememberMeManager getCookieRememberMeManager() {
@@ -107,4 +111,8 @@ public class ShiroConfig {
     return new SysAuthenFilter();
   }
 
+  @Bean
+  public static LifecycleBeanPostProcessor getLifecycleBeanPostProcessor() {
+    return new LifecycleBeanPostProcessor();
+  }
 }

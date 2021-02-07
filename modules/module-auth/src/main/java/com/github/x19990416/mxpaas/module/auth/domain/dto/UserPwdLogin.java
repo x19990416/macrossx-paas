@@ -14,4 +14,5 @@ public class UserPwdLogin {
     @NotEmpty
     private String password;
     private String code;
+    private String uuid;
 }

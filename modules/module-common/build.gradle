@@ -19,7 +19,8 @@ repositories {
 
 dependencies {
     api group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springbootStarterVersion
-
+    api group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: springbootStarterVersion
+    api group: 'org.apache.directory.studio', name: 'org.apache.commons.codec', version: '1.8'
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }

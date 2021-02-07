@@ -16,6 +16,7 @@
 package com.github.x19990416.mxpaas;
 
 import com.github.x19990416.mxpaas.common.utils.SpringContextHolder;
+import com.github.x19990416.mxpaas.module.auth.AnonymousAccess;
 import com.github.x19990416.mxpaas.module.auth.domain.dto.UserPwdLogin;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import com.google.common.collect.Lists;
@@ -99,7 +100,7 @@ public class App {
     System.out.println("程序异常：" + ex.toString());
     return ex.getMessage();
   }
-
+  @AnonymousAccess
   @GetMapping("/123")
   public String do123() {
     log.info("_____________do 123");

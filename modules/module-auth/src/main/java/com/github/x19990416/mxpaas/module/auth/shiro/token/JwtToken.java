@@ -13,17 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.common.config;
+package com.github.x19990416.mxpaas.module.auth.shiro.token;
 
-import com.github.x19990416.mxpaas.common.utils.RedisUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.github.x19990416.mxpaas.module.auth.util.JwtUtil;
+import org.apache.shiro.authc.AuthenticationToken;
 
-@Configuration
-public class SysConfig {
-  @Bean
-  public RsaProperties rsaProperties() {
-    return new RsaProperties();
+public class JwtToken implements AuthenticationToken {
+
+  private static final long serialVersionUID = 1L;
+
+  // 加密后的 JWT token串
+  private String token;
+
+  private String userName;
+
+  public JwtToken(String token) {
+    this.token = token;
+    this.userName = JwtUtil.getClaim(token);
   }
 
+  @Override
+  public Object getPrincipal() {
+    return this.userName;
+  }
+
+  @Override
+  public Object getCredentials() {
+    return token;
+  }
 }
