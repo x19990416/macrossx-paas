@@ -13,8 +13,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="12">
-      <module name="macrossx-paas.applications.main" target="11" />
-      <module name="macrossx-paas.applications.test" target="11" />
       <module name="macrossx-paas.applications.test-application.main" target="11" />
       <module name="macrossx-paas.applications.test-application.test" target="11" />
       <module name="macrossx-paas.modules.module-auth-user.main" target="11" />

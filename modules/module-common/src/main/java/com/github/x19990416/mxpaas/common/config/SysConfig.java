@@ -15,9 +15,11 @@
  */
 package com.github.x19990416.mxpaas.common.config;
 
-import com.github.x19990416.mxpaas.common.utils.RedisUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class SysConfig {
@@ -25,5 +27,16 @@ public class SysConfig {
   public RsaProperties rsaProperties() {
     return new RsaProperties();
   }
-
+  @Bean
+  public CorsFilter corsFilter() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    //config.addAllowedOrigin(CorsConfiguration.ALL);
+    config.addAllowedOrigin("http://localhost:9527");
+    config.addAllowedHeader(CorsConfiguration.ALL);
+    config.addAllowedMethod(CorsConfiguration.ALL);
+    source.registerCorsConfiguration("/**", config);
+    return new CorsFilter(source);
+  }
 }

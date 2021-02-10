@@ -13,19 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.application.admin.service;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+
+import com.github.x19990416.mxpaas.application.admin.domain.vo.MenuVo;
+import com.github.x19990416.mxpaas.application.admin.service.dto.MenuDto;
 
 import java.util.List;
 
-public interface AuthRoleRepository extends JpaRepository<AuthRole, Long> {
-  @Query(
-      value =
-          "SELECT r.* FROM sys_role r, sys_users_roles u WHERE "
-              + "r.role_id = u.role_id AND u.user_id = ?1",
-      nativeQuery = true)
-  List<AuthRole> findByUserId(Long id);
+public interface MenuService {
+	public List<MenuDto> findByUser(Long userId);
+	public List<MenuVo> buildMenu(List<MenuDto> menuDtoList);
+	public List<MenuDto> buildTree(List<MenuDto> menuDtoList);
 }

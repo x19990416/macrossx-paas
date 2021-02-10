@@ -7,5 +7,5 @@
  * in the user guide at https://docs.gradle.org/5.0/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'macrossx-paas'
-include ':modules:module-auth',':modules:module-jdbc',':modules:module-common',':modules:module-jpa',':applications:admin'
+rootProject.name = 'admin'
+include ':modules:module-auth',':modules:module-common'

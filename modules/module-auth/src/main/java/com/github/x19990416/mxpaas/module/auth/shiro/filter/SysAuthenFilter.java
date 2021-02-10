@@ -67,7 +67,7 @@ public class SysAuthenFilter extends BasicHttpAuthenticationFilter {
   protected boolean executeLogin(ServletRequest request, ServletResponse response) {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     String token = httpServletRequest.getHeader(_TOKEN_HEADER);
-    if (StringUtils.isNotEmpty(token)) return false;
+    if (StringUtils.isEmpty(token)) return false;
     JwtToken jwtToken = new JwtToken(token);
     getSubject(request, response).login(jwtToken);
     // 如果没有抛出异常则代表登入成功，返回true

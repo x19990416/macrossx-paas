@@ -13,13 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.domain;
+package com.github.x19990416.mxpaas.application.admin.domain;
 
 import com.github.x19990416.mxpaas.module.jpa.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.context.annotation.Lazy;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -27,14 +27,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "sys_user")
-@EqualsAndHashCode(callSuper = false)
-public class AuthUser extends BaseEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+@DynamicUpdate()
+public class User extends BaseEntity implements Serializable {
 
   @Id
   @Column(name = "user_id")
@@ -42,6 +42,28 @@ public class AuthUser extends BaseEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(name = "ID", hidden = true)
   private Long id;
+/*
+  @ManyToMany(fetch = FetchType.EAGER)
+  @Schema(name = "用户角色")
+  @JoinTable(
+      name = "sys_users_roles",
+      joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+      inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
+  private Set<Role> roles;*/
+  /*
+  @ManyToMany
+  @Schema(name = "用户岗位")
+  @JoinTable(
+      name = "sys_users_jobs",
+      joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+      inverseJoinColumns = {@JoinColumn(name = "job_id", referencedColumnName = "job_id")})
+  private Set<Job> jobs;*/
+  /*
+   @OneToOne
+   @JoinColumn(name = "dept_id")
+   @Schema(name = "用户部门")
+   private Dept dept;
+  */
 
   @NotBlank
   @Column(unique = true)
@@ -80,15 +102,7 @@ public class AuthUser extends BaseEntity implements Serializable {
   @Schema(name = "是否为admin账号", hidden = true)
   private Boolean isAdmin = false;
 
-  @ManyToMany(fetch = FetchType.EAGER)
-  @Schema(name = "用户角色")
-  @JoinTable(name = "sys_users_roles",
-          joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "user_id")},
-          inverseJoinColumns = {@JoinColumn(name = "role_id",referencedColumnName = "role_id")})
-  private Set<AuthRole> roles;
-
   @Column(name = "pwd_reset_time")
   @Schema(name = "最后修改密码的时间", hidden = true)
   private Date pwdResetTime;
-
 }

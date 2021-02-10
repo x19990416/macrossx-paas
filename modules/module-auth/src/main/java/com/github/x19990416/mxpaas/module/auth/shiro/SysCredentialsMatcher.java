@@ -15,14 +15,11 @@
  */
 package com.github.x19990416.mxpaas.module.auth.shiro;
 
-import com.github.x19990416.mxpaas.common.utils.RsaUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
-
-import java.util.Objects;
 
 @Slf4j
 public class SysCredentialsMatcher extends SimpleCredentialsMatcher {

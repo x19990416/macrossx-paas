@@ -13,19 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.application.admin;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import com.github.x19990416.mxpaas.application.admin.repository.RoleRepository;
+import org.apache.shiro.util.Assert;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-public interface AuthRoleRepository extends JpaRepository<AuthRole, Long> {
-  @Query(
-      value =
-          "SELECT r.* FROM sys_role r, sys_users_roles u WHERE "
-              + "r.role_id = u.role_id AND u.user_id = ?1",
-      nativeQuery = true)
-  List<AuthRole> findByUserId(Long id);
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class AppTest {
+	@Autowired
+	RoleRepository repository;
+  @Test
+  public void test1() {
+	repository.findByUserId(1l);
+  }
 }

@@ -17,7 +17,9 @@ package com.github.x19990416.mxpaas.module.auth.shiro;
 
 import com.github.x19990416.mxpaas.module.auth.SysUserModularRealmAuthenticator;
 import com.github.x19990416.mxpaas.module.auth.shiro.filter.SysAuthenFilter;
+import com.github.x19990416.mxpaas.module.auth.shiro.realm.JwtRealm;
 import com.github.x19990416.mxpaas.module.auth.shiro.realm.UserPasswordRealm;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +43,7 @@ public class ShiroConfig {
   private final ShiroProperties shiroProperties;
   private final ShiroRedisCacheManager shiroRedisCacheManager;
   private final UserPasswordRealm userPasswordRealm;
+  private final JwtRealm jwtRealm;
 
   @Bean
   public SecurityManager securityManager() {
@@ -50,10 +53,10 @@ public class ShiroConfig {
     // 2. cache
     securityManager.setCacheManager(shiroRedisCacheManager);
     // 3. realm
-    securityManager.setRealm(userPasswordRealm);
+   // securityManager.setRealms(Lists.newArrayList(userPasswordRealm,jwtRealm));
     // 4. session
 
-    // securityManager.setAuthenticator(sysUserModularRealmAuthenticator());
+     securityManager.setAuthenticator(sysUserModularRealmAuthenticator());
     // RequestMappingHandlerMapping:
 
     return securityManager;
@@ -103,6 +106,7 @@ public class ShiroConfig {
     // 设置realm判断条件
     sysUserModularRealmAuthenticator.setAuthenticationStrategy(new AtLeastOneSuccessfulStrategy());
 
+    sysUserModularRealmAuthenticator.setRealms(Lists.newArrayList(userPasswordRealm,jwtRealm));
     return sysUserModularRealmAuthenticator;
   }
 

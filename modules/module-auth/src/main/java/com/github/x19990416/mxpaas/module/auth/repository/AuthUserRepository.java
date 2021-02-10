@@ -18,6 +18,6 @@ package com.github.x19990416.mxpaas.module.auth.repository;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AuthUserRepository extends JpaRepository<AuthUser,Long> {
-	public AuthUser findByUsername(String username);
+public interface AuthUserRepository extends JpaRepository<AuthUser, Long> {
+  public AuthUser findByUsername(String username);
 }

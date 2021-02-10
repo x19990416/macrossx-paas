@@ -10,5 +10,5 @@ import java.util.List;
 import java.util.Set;
 
 public interface AuthRoleService {
-    public Set<String> getUserRoleLevels(AuthUser authUser);
+    public Set<String> getUserRoles(AuthUser authUser);
 }

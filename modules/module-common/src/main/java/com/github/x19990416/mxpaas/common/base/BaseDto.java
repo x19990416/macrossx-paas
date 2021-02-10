@@ -13,19 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.common.base;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
+import lombok.Data;
+import lombok.ToString;
 
-import java.util.List;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
-public interface AuthRoleRepository extends JpaRepository<AuthRole, Long> {
-  @Query(
-      value =
-          "SELECT r.* FROM sys_role r, sys_users_roles u WHERE "
-              + "r.role_id = u.role_id AND u.user_id = ?1",
-      nativeQuery = true)
-  List<AuthRole> findByUserId(Long id);
+@Data
+@ToString
+public class BaseDto implements Serializable {
+	/** 创建者 */
+	private String createBy;
+	/** 修改者 */
+	private String updateBy;
+	/** 创建时间 */
+	private Timestamp createTime;
+	/** 修改时间 */
+	private Timestamp updateTime;
 }

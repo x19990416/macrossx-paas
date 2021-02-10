@@ -15,6 +15,7 @@
  */
 package com.github.x19990416.mxpaas.module.auth;
 
+import com.github.x19990416.mxpaas.module.auth.shiro.token.JwtToken;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import com.google.common.collect.Maps;
 import org.apache.shiro.authc.AuthenticationException;
@@ -26,15 +27,12 @@ import org.apache.shiro.realm.Realm;
 import java.util.Collection;
 import java.util.HashMap;
 
-/**
- * 统一处理 Realm 登录策略
- */
+/** 统一处理 Realm 登录策略 */
 public class SysUserModularRealmAuthenticator extends ModularRealmAuthenticator {
   protected AuthenticationInfo doAuthenticate(AuthenticationToken authenticationToken)
       throws AuthenticationException {
     // 判断getRealms()是否返回为空
     assertRealmsConfigured();
-
     // 所有Realm
     Collection<Realm> realms = getRealms();
     // 登录类型对应的所有Realm
@@ -43,13 +41,14 @@ public class SysUserModularRealmAuthenticator extends ModularRealmAuthenticator 
       realmHashMap.put(realm.getName(), realm);
     }
 
-    SysUserToken token = (SysUserToken) authenticationToken;
-    SysUserToken.LoginType loginType = token.getLoginType();
-
-    if (realmHashMap.get(loginType.getType()) != null) {
-      return doSingleRealmAuthentication(realmHashMap.get(loginType.getType()), token);
+    if (authenticationToken instanceof SysUserToken) {
+      String name = ((SysUserToken) authenticationToken).getLoginType().name();
+      return doSingleRealmAuthentication(
+          realmHashMap.get(name), authenticationToken);
+    } else if (authenticationToken instanceof JwtToken) {
+      return doSingleRealmAuthentication(realmHashMap.get("jwt_realm"), authenticationToken);
     } else {
-      return doMultiRealmAuthentication(realms, token);
+      return doMultiRealmAuthentication(realms, authenticationToken);
     }
   }
 }

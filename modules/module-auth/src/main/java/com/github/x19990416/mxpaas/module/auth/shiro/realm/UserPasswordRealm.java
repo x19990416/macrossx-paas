@@ -15,8 +15,8 @@
  */
 package com.github.x19990416.mxpaas.module.auth.shiro.realm;
 
+import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
-import com.github.x19990416.mxpaas.module.auth.service.AuthRoleService;
 import com.github.x19990416.mxpaas.module.auth.service.AuthUserService;
 import com.github.x19990416.mxpaas.module.auth.shiro.SysCredentialsMatcher;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
@@ -30,13 +30,13 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class UserPasswordRealm extends AuthorizingRealm {
   private final AuthUserService authUserService;
-  private final AuthRoleService authRoleService;
-
 
   public String getName() {
     return SysUserToken.LoginType.USER_PASSWORD.name();
@@ -55,7 +55,8 @@ public class UserPasswordRealm extends AuthorizingRealm {
   protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
     AuthUser authUser = (AuthUser) principals.getPrimaryPrincipal();
-    authorizationInfo.addRoles(authRoleService.getUserRoleLevels(authUser));
+    authorizationInfo.addRoles(
+        authUser.getRoles().stream().map(AuthRole::getRole).collect(Collectors.toSet()));
     return authorizationInfo;
   }
 

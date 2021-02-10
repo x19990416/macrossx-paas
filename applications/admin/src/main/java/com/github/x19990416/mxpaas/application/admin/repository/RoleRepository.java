@@ -13,19 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.application.admin.repository;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
+import com.github.x19990416.mxpaas.application.admin.domain.Menu;
+import com.github.x19990416.mxpaas.application.admin.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.Set;
 
-public interface AuthRoleRepository extends JpaRepository<AuthRole, Long> {
+public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
   @Query(
       value =
           "SELECT r.* FROM sys_role r, sys_users_roles u WHERE "
               + "r.role_id = u.role_id AND u.user_id = ?1",
       nativeQuery = true)
-  List<AuthRole> findByUserId(Long id);
+  Set<Role> findByUserId(Long id);
 }

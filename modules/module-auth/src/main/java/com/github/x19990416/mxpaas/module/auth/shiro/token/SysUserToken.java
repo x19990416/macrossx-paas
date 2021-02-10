@@ -39,7 +39,6 @@ public class SysUserToken extends UsernamePasswordToken {
       this.type = type;
     }
   }
-
   /** 其他额信息，比如微信登录放入的是微信返回的code */
   private Object extra;
 

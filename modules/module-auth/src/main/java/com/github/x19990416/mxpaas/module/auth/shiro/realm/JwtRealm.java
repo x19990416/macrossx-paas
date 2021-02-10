@@ -15,25 +15,34 @@
  */
 package com.github.x19990416.mxpaas.module.auth.shiro.realm;
 
+import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
 import com.github.x19990416.mxpaas.module.auth.service.AuthRoleService;
 import com.github.x19990416.mxpaas.module.auth.service.AuthUserService;
+import com.github.x19990416.mxpaas.module.auth.shiro.SysCredentialsMatcher;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.JwtToken;
 import lombok.RequiredArgsConstructor;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class JwtRealm extends AuthorizingRealm {
   private final AuthUserService authUserService;
-  private final AuthRoleService authRoleService;
+  @Override
+  public String getName() {
+    return "jwt_realm";
+  }
 
   @Override
   public boolean supports(AuthenticationToken token) {
@@ -63,11 +72,16 @@ public class JwtRealm extends AuthorizingRealm {
   protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     // 获取当前用户
     AuthUser currentUser = (AuthUser) SecurityUtils.getSubject().getPrincipal();
-    Set<String> roles = authRoleService.getUserRoleLevels(currentUser);
+
     // 查询数据库，获取用户的权限信息
     // Set<String> perms
     SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-    info.setRoles(roles);
+    info.setRoles(currentUser.getRoles().stream().map(AuthRole::getRole).collect(Collectors.toSet()));
     return info;
+  }
+
+  @Override
+  public CredentialsMatcher getCredentialsMatcher() {
+    return new SysCredentialsMatcher();
   }
 }
