@@ -13,12 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.application.admin.repository;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
+import com.github.x19990416.mxpaas.application.admin.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface AuthUserRepository extends JpaRepository<AuthUser, Long> , JpaSpecificationExecutor<AuthUser> {
-  public AuthUser findByUsername(String username);
-}
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {}

@@ -13,12 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.common.vo;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
-public interface AuthUserRepository extends JpaRepository<AuthUser, Long> , JpaSpecificationExecutor<AuthUser> {
-  public AuthUser findByUsername(String username);
+import java.util.List;
+
+@Data
+@Accessors(chain = true)
+public class PageVo<T> {
+  private List<T> contents;
+  private Long total;
+  private int page;
+  private int size;
 }

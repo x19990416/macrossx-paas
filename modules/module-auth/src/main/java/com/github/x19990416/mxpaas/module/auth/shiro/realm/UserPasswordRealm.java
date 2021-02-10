@@ -56,7 +56,7 @@ public class UserPasswordRealm extends AuthorizingRealm {
     SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
     AuthUser authUser = (AuthUser) principals.getPrimaryPrincipal();
     authorizationInfo.addRoles(
-        authUser.getRoles().stream().map(AuthRole::getRole).collect(Collectors.toSet()));
+        authUser.getRoles().stream().map(AuthRole::getLevelName).collect(Collectors.toSet()));
     return authorizationInfo;
   }
 

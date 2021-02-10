@@ -76,7 +76,7 @@ public class JwtRealm extends AuthorizingRealm {
     // 查询数据库，获取用户的权限信息
     // Set<String> perms
     SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-    info.setRoles(currentUser.getRoles().stream().map(AuthRole::getRole).collect(Collectors.toSet()));
+    info.setRoles(currentUser.getRoles().stream().map(AuthRole::getLevelName).collect(Collectors.toSet()));
     return info;
   }
 

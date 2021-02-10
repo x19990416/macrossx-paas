@@ -37,7 +37,7 @@ public class SysAuthController {
     SysUserToken sysUserToken = new SysUserToken(login.getUsername(), login.getPassword());
     subject.login(sysUserToken);
     String jwtToken = JwtUtil.sign(login.getUsername());
-    return ResponseEntity.ok(new AuthUserDto().setToken(jwtToken).setRoles(roleService.getUserRoleLevels((AuthUser)subject.getPrincipal())));
+    return ResponseEntity.ok(new AuthUserDto().setToken(jwtToken).setRoles(roleService.getUserRoles((AuthUser)subject.getPrincipal())));
   }
   @PostMapping("/info")
   public ResponseEntity<AuthUser> info() {

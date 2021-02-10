@@ -15,40 +15,26 @@
  */
 package com.github.x19990416.mxpaas.application.admin.controller;
 
-import com.github.x19990416.mxpaas.application.admin.domain.vo.UserInfoVo;
-import com.github.x19990416.mxpaas.application.admin.service.MenuService;
-import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
-import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
-import com.github.x19990416.mxpaas.module.auth.service.AuthRoleService;
+import com.github.x19990416.mxpaas.application.admin.service.UserService;
+import com.github.x19990416.mxpaas.application.admin.service.dto.UserQueryCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.stream.Collectors;
-
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
-  private final AuthRoleService authRoleService;
-  private final MenuService menuService;
+  private final UserService userService;
+  @GetMapping("/query")
+  public ResponseEntity<Object> query(UserQueryCriteria criteria, Pageable pageable) {
+    System.out.println(criteria+"\t"+pageable);
 
-  @GetMapping("/info")
-  public ResponseEntity<Object> info(String token) {
-    AuthUser user = (AuthUser) SecurityUtils.getSubject().getPrincipal();
-    log.info("{}",menuService.buildTree(menuService.findByUser(user.getId())));
-    UserInfoVo userInfo =   new UserInfoVo()
-            .setAvatar(user.getAvatarName())
-            .setName(user.getNickName())
-            .setRoles(user.getRoles().stream().map(AuthRole::getRole).collect(Collectors.toSet()))
-            .setMenus(menuService.buildMenu(menuService.buildTree(menuService.findByUser(user.getId()))));
-            log.info("{}",userInfo);
-    return ResponseEntity.ok(userInfo
-      );
+    return ResponseEntity.ok(userService.queryAll(criteria,pageable));
   }
 }

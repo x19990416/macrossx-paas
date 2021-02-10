@@ -19,7 +19,7 @@ public class AuthRoleServiceImpl implements AuthRoleService {
   @Override
   public Set<String> getUserRoles(AuthUser authUser) {
     return authRoleRepository.findByUserId(authUser.getId()).stream()
-        .map(AuthRole::getRole)
+        .map(AuthRole::getLevelName)
         .collect(Collectors.toSet());
   }
 }

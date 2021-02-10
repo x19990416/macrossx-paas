@@ -13,12 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.application.admin.service;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.github.x19990416.mxpaas.application.admin.service.dto.UserDto;
+import com.github.x19990416.mxpaas.application.admin.service.dto.UserQueryCriteria;
+import com.github.x19990416.mxpaas.common.vo.PageVo;
+import org.springframework.data.domain.Pageable;
 
-public interface AuthUserRepository extends JpaRepository<AuthUser, Long> , JpaSpecificationExecutor<AuthUser> {
-  public AuthUser findByUsername(String username);
+public interface UserService {
+	PageVo<UserDto> queryAll(UserQueryCriteria criteria, Pageable pageable);
 }

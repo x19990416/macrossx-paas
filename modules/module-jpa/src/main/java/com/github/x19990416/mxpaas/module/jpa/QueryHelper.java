@@ -1,9 +1,9 @@
 /** create by Guo Limin on 2021/1/30. */
-/*
-package com.github.x19990416.mxpaas.admin.common.utils;
+package com.github.x19990416.mxpaas.module.jpa;
 
-import com.github.x19990416.mxpaas.admin.common.annotation.DataPermission;
-import com.github.x19990416.mxpaas.admin.common.annotation.Query;
+import com.github.x19990416.mxpaas.module.jpa.annotation.DataPermission;
+import com.github.x19990416.mxpaas.module.jpa.annotation.Query;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.util.CollectionUtils;
@@ -26,7 +26,7 @@ public class QueryHelper {
     DataPermission permission = query.getClass().getAnnotation(DataPermission.class);
     if (permission != null) {
       // 获取数据权限
-      List<Long> dataScopes = SecurityUtils.getCurrentUserDataScope();
+      List<Long> dataScopes = Lists.newArrayList() /*SecurityUtils.getCurrentUserDataScope()*/;
       if (!CollectionUtils.isEmpty(dataScopes)) {
         if (Strings.isNotBlank(permission.joinName())
             && Strings.isNotBlank(permission.fieldName())) {
@@ -210,4 +210,3 @@ public class QueryHelper {
     return fields;
   }
 }
-*/

@@ -13,12 +13,23 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.module.auth.repository;
+package com.github.x19990416.mxpaas.application.admin.service.dto;
 
-import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import com.github.x19990416.mxpaas.module.jpa.annotation.Query;
+import lombok.Data;
 
-public interface AuthUserRepository extends JpaRepository<AuthUser, Long> , JpaSpecificationExecutor<AuthUser> {
-  public AuthUser findByUsername(String username);
+import java.sql.Timestamp;
+import java.util.List;
+
+@Data
+public class UserQueryCriteria {
+  @Query private Long id;
+
+  @Query(blurry = "email,username,nickName")
+  private String blurry;
+
+  @Query private Boolean enabled;
+
+  @Query(type = Query.Type.BETWEEN)
+  private List<Timestamp> createTime;
 }

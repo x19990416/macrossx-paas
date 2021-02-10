@@ -42,14 +42,14 @@ public class User extends BaseEntity implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(name = "ID", hidden = true)
   private Long id;
-/*
-  @ManyToMany(fetch = FetchType.EAGER)
+
+  @ManyToMany()
   @Schema(name = "用户角色")
   @JoinTable(
       name = "sys_users_roles",
       joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
       inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
-  private Set<Role> roles;*/
+  private Set<Role> roles;
   /*
   @ManyToMany
   @Schema(name = "用户岗位")

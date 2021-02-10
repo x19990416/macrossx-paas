@@ -52,10 +52,9 @@ public class SysAuthenFilter extends BasicHttpAuthenticationFilter {
           if (!Objects.isNull(
               handlerMethod.getMethod().getDeclaredAnnotation(AnonymousAccess.class))) {
             return true;
-          } else {
-            return executeLogin(request, response);
           }
         }
+        executeLogin(request, response);
       } catch (Exception e) {
         log.error(e.getMessage(), e);
         return false;

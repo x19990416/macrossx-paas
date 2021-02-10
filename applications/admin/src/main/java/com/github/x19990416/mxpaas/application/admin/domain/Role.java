@@ -21,6 +21,7 @@ import com.github.x19990416.mxpaas.module.jpa.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -34,6 +35,7 @@ import java.util.Set;
 @Table(name = "sys_role")
 @EqualsAndHashCode(callSuper = false)
 @DynamicUpdate()
+@Accessors(chain = true)
 public class Role extends BaseEntity implements Serializable {
 
 	@Id
@@ -75,5 +77,7 @@ public class Role extends BaseEntity implements Serializable {
 
 	@Schema(name = "描述")
 	private String description;
+
+	private String levelName;
 
 }

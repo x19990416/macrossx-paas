@@ -41,8 +41,7 @@ public class AuthRole extends BaseEntity implements Serializable {
   private Long id;
 
   @NotBlank
-  @Column(name = "role")
-  private String role;
+  private String levelName;
 
   @NotBlank
   @Schema(name = "名称", hidden = true)

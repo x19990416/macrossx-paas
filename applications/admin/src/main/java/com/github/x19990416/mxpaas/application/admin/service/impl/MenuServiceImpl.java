@@ -25,13 +25,11 @@ import com.github.x19990416.mxpaas.application.admin.service.MenuService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.MenuDto;
 import com.github.x19990416.mxpaas.application.admin.service.dto.MenuMapper;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,7 +48,7 @@ public class MenuServiceImpl implements MenuService {
   private final MenuMapper menuMapper;
 
   @Override
- // @Cacheable(key = "'user:' + #p0")
+  // @Cacheable(key = "'user:' + #p0")
   public List<MenuDto> findByUser(Long userId) {
     Set<Long> roles =
         roleRepository.findByUserId(userId).stream().map(Role::getId).collect(Collectors.toSet());
@@ -58,7 +56,7 @@ public class MenuServiceImpl implements MenuService {
     return menus.stream().map(menuMapper::toDto).collect(Collectors.toList());
   }
 
-   public List<MenuDto> buildTree(List<MenuDto> menuDtos) {
+  public List<MenuDto> buildTree(List<MenuDto> menuDtos) {
     List<MenuDto> trees = new ArrayList<>();
     Set<Long> ids = new HashSet<>();
     for (MenuDto menuDTO : menuDtos) {
