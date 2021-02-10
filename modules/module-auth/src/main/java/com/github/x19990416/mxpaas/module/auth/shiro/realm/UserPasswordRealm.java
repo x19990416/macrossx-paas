@@ -69,7 +69,7 @@ public class UserPasswordRealm extends AuthorizingRealm {
     if (authUser == null) {
       throw new AccountException("用户名不正确");
     }
-    return new SimpleAuthenticationInfo(authUser.getUsername(), authUser.getPassword(), getName());
+    return new SimpleAuthenticationInfo(authUser, authUser.getPassword(), getName());
   }
 
   @Override
