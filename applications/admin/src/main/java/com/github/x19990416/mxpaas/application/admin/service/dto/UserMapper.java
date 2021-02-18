@@ -23,19 +23,23 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper extends BaseMapper<UserDto, User> {
-	@Mappings({@Mapping(source = "role.name",target = "roles")})
-	public List<UserDto> toDto(List<User> entityList);
-	default Set<String> toRoleName(Set<Role> roles) {
-		return roles.stream().map(Role::getLevelName).collect(Collectors.toSet());
-	}
+  @Mappings({@Mapping(source = "role.name", target = "roles")})
+  default Set<String> toRoleName(Set<Role> roles) {
+    if (roles == null) {
+      return null;
+    }
+    return roles.stream().map(Role::getLevelName).collect(Collectors.toSet());
+  }
 
-	default Set<Role> toRole(Set<String> roleName) {
-		return roleName.stream().map(name->new Role().setLevelName(name)).collect(Collectors.toSet());
-	}
+  default Set<Role> toRole(Set<String> roleName) {
+    if (roleName == null) {
+      return null;
+    }
+    return roleName.stream().map(name -> new Role().setLevelName(name)).collect(Collectors.toSet());
+  }
 }

@@ -41,14 +41,16 @@ public class CurrentUserController {
   @GetMapping("/info")
   public ResponseEntity<Object> info(String token) {
     AuthUser user = (AuthUser) SecurityUtils.getSubject().getPrincipal();
-    log.info("{}",menuService.buildTree(menuService.findByUser(user.getId())));
-    UserInfoVo userInfo =   new UserInfoVo()
+    UserInfoVo userInfo =
+        new UserInfoVo()
             .setAvatar(user.getAvatarName())
-            .setName(user.getNickName())
-            .setRoles(user.getRoles().stream().map(AuthRole::getLevelName).collect(Collectors.toSet()))
-            .setMenus(menuService.buildMenu(menuService.buildTree(menuService.findByUser(user.getId()))));
-            log.info("{}",userInfo);
-    return ResponseEntity.ok(userInfo
-      );
+            .setNickname(user.getNickName())
+            .setUsername(user.getUsername())
+            .setRoles(
+                user.getRoles().stream().map(AuthRole::getLevelName).collect(Collectors.toSet()))
+            .setMenus(
+                menuService.buildMenu(menuService.buildTree(menuService.findByUser(user.getId()))));
+    log.info("{}", userInfo);
+    return ResponseEntity.ok(userInfo);
   }
 }

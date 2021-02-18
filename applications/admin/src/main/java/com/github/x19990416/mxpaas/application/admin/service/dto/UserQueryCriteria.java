@@ -25,7 +25,7 @@ import java.util.List;
 public class UserQueryCriteria {
   @Query private Long id;
 
-  @Query(blurry = "email,username,nickName")
+  @Query(blurry = "username,nickName")
   private String blurry;
 
   @Query private Boolean enabled;

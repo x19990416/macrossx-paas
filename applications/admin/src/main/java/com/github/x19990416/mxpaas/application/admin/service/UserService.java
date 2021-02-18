@@ -20,6 +20,12 @@ import com.github.x19990416.mxpaas.application.admin.service.dto.UserQueryCriter
 import com.github.x19990416.mxpaas.common.vo.PageVo;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Set;
+
 public interface UserService {
-	PageVo<UserDto> queryAll(UserQueryCriteria criteria, Pageable pageable);
+	public PageVo<UserDto> queryAll(UserQueryCriteria criteria, Pageable pageable);
+
+	public void createUser(UserDto resourceDto);
+
+	public void deleteUser(Set<Long> ids);
 }

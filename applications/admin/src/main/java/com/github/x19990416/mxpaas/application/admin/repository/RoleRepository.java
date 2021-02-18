@@ -17,6 +17,7 @@ package com.github.x19990416.mxpaas.application.admin.repository;
 
 import com.github.x19990416.mxpaas.application.admin.domain.Menu;
 import com.github.x19990416.mxpaas.application.admin.domain.Role;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,5 @@ public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificat
               + "r.role_id = u.role_id AND u.user_id = ?1",
       nativeQuery = true)
   Set<Role> findByUserId(Long id);
+
 }

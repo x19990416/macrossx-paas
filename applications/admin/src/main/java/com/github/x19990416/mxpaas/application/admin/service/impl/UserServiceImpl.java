@@ -15,21 +15,31 @@
  */
 package com.github.x19990416.mxpaas.application.admin.service.impl;
 
+import com.github.x19990416.mxpaas.application.admin.domain.SysGenConfig;
 import com.github.x19990416.mxpaas.application.admin.domain.User;
 import com.github.x19990416.mxpaas.application.admin.repository.UserRepository;
 import com.github.x19990416.mxpaas.application.admin.service.UserService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.UserDto;
 import com.github.x19990416.mxpaas.application.admin.service.dto.UserMapper;
 import com.github.x19990416.mxpaas.application.admin.service.dto.UserQueryCriteria;
+import com.github.x19990416.mxpaas.common.exception.EntityExistException;
 import com.github.x19990416.mxpaas.common.vo.PageVo;
 import com.github.x19990416.mxpaas.module.jpa.QueryHelper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "user")
+@Slf4j
 public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
@@ -46,6 +56,22 @@ public class UserServiceImpl implements UserService {
         .setTotal(page.getTotalElements())
         .setPage(pageable.getPageNumber())
         .setSize(pageable.getPageSize());
+  }
 
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void createUser(UserDto resourceDto) {
+    log.info("{}", resourceDto);
+    if (!Objects.isNull(userRepository.findByUsername(resourceDto.getUsername()))) {
+      throw new EntityExistException(SysGenConfig.class, "username", resourceDto.getUsername());
+    }
+    userRepository.save(userMapper.toEntity(resourceDto));
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteUser(Set<Long> ids) {
+    // TODO: 添加权限相关判定
+    userRepository.deleteAllByIdIn(ids);
   }
 }

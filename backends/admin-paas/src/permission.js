@@ -41,7 +41,7 @@ router.beforeEach(async(to, from, next) => {
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
           const menuComponents = filterAsyncRouter(menus).concat(accessRoutes)
-          console.log(menuComponents)
+          //console.log(menuComponents)
           global.antRouter = menuComponents
           router.addRoutes( menuComponents) // 2.动态添加路由
 
@@ -75,8 +75,8 @@ router.beforeEach(async(to, from, next) => {
 })
 
 function filterAsyncRouter(asyncRouterMap) {
+  console.log(asyncRouterMap)
   const accessedRouters = asyncRouterMap.filter(route => {
-    console.log(route.name)
     if (route.component) {
       if (route.component === 'Layout') {
         route.component = Layout
@@ -85,7 +85,6 @@ function filterAsyncRouter(asyncRouterMap) {
         }
     }
     if (route.children && route.children.length) {
-      console.log('xxxxxxxxxxxxxxxxxxx')
       route.children = filterAsyncRouter(route.children)
     }
     return true

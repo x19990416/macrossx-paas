@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+group 'com.github.x19990416.macrossx.tools'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api group: 'org.freemarker', name: 'freemarker', version: '2.3.30'
+}

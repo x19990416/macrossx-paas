@@ -5,6 +5,7 @@ import com.github.x19990416.mxpaas.module.jpa.annotation.DataPermission;
 import com.github.x19990416.mxpaas.module.jpa.annotation.Query;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.util.CollectionUtils;
 
@@ -42,7 +43,7 @@ public class QueryHelper {
       List<Field> fields = getAllFields(query.getClass(), new ArrayList<>());
       for (Field field : fields) {
         boolean accessible = field.trySetAccessible();
-        if (accessible == false)
+        if (!accessible)
           // 设置对象的访问权限，保证对private的属性的访
           field.setAccessible(true);
         Query q = field.getAnnotation(Query.class);
@@ -58,13 +59,14 @@ public class QueryHelper {
           }
           Join join = null;
           // 模糊多字段
-          if (Strings.isNotEmpty(blurry)) {
+          if (StringUtils.isNotEmpty(blurry)) {
             List<Predicate> orPredicate = new ArrayList<>();
             for (String s : blurry.split(",")) {
               orPredicate.add(cb.like(root.get(s).as(String.class), "%" + val.toString() + "%"));
             }
             Predicate[] p = new Predicate[orPredicate.size()];
             list.add(cb.or(orPredicate.toArray(p)));
+
             continue;
           }
           if (Strings.isNotEmpty(joinName)) {

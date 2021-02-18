@@ -16,11 +16,13 @@
 package com.github.x19990416.mxpaas.application.admin.repository;
 
 import com.github.x19990416.mxpaas.application.admin.domain.Menu;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.Set;
+import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
 
@@ -29,5 +31,12 @@ public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificat
           "SELECT m.* FROM sys_menu m, sys_roles_menus r WHERE "
               + "m.menu_id = r.menu_id AND r.role_id IN ?1 AND type != ?2 order by m.menu_sort asc",
       nativeQuery = true)
-  Set<Menu> findByRoleIdsAndTypeNot(Set<Long> roleIds, int type);
+  List<Menu> findByRoleIdsAndTypeNot(List<Long> roleIds, int type);
+
+  @Query(
+      value =
+          "SELECT m.* FROM sys_menu m, sys_roles_menus r WHERE "
+              + "m.menu_id = r.menu_id AND r.role_id IN ?1 AND type != ?2 order by m.menu_sort asc #{#pageable}",
+      nativeQuery = true)
+  Page<Menu> findByRoleIdsAndTypeNotByPage(List<Long> roleIds, int type, Pageable pageable);
 }

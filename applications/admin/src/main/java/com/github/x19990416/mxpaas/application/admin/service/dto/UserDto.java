@@ -16,13 +16,17 @@
 package com.github.x19990416.mxpaas.application.admin.service.dto;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.Set;
 
 @Data
+@Accessors(chain = true)
 public class UserDto {
 	private String username;
+	private String nickName;
 	private Set<String> roles;
 	private Long id;
+	private String description;
 }

@@ -6,19 +6,23 @@
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="$PROJECT_DIR$/../../Program Files/gradle-5.0" />
+        <option name="gradleHome" value="$USER_HOME$/Program Files/gradle-5.0" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/applications" />
             <option value="$PROJECT_DIR$/applications/admin" />
+            <option value="$PROJECT_DIR$/macrossx-tools" />
+            <option value="$PROJECT_DIR$/macrossx-tools/tool-extra" />
             <option value="$PROJECT_DIR$/modules" />
             <option value="$PROJECT_DIR$/modules/module-auth" />
             <option value="$PROJECT_DIR$/modules/module-common" />
+            <option value="$PROJECT_DIR$/modules/module-generator" />
             <option value="$PROJECT_DIR$/modules/module-jdbc" />
             <option value="$PROJECT_DIR$/modules/module-jpa" />
           </set>
         </option>
+        <option name="useAutoImport" value="true" />
         <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>

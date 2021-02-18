@@ -15,6 +15,7 @@
  */
 package com.github.x19990416.mxpaas.application.admin.service.impl;
 
+import ch.qos.logback.core.pattern.ConverterUtil;
 import com.github.x19990416.mxpaas.application.admin.domain.Menu;
 import com.github.x19990416.mxpaas.application.admin.domain.Role;
 import com.github.x19990416.mxpaas.application.admin.domain.vo.MenuMetaVo;
@@ -24,18 +25,22 @@ import com.github.x19990416.mxpaas.application.admin.repository.RoleRepository;
 import com.github.x19990416.mxpaas.application.admin.service.MenuService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.MenuDto;
 import com.github.x19990416.mxpaas.application.admin.service.dto.MenuMapper;
+import com.github.x19990416.mxpaas.application.admin.service.dto.MenuQueryCriteria;
+import com.github.x19990416.mxpaas.application.admin.utils.ConvterUtil;
+import com.github.x19990416.mxpaas.common.vo.PageVo;
+import com.github.x19990416.mxpaas.module.jpa.QueryHelper;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,12 +53,19 @@ public class MenuServiceImpl implements MenuService {
   private final MenuMapper menuMapper;
 
   @Override
-  // @Cacheable(key = "'user:' + #p0")
+  @Cacheable(key = "'user:' + #p0")
   public List<MenuDto> findByUser(Long userId) {
-    Set<Long> roles =
-        roleRepository.findByUserId(userId).stream().map(Role::getId).collect(Collectors.toSet());
-    Set<Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roles, 2);
-    return menus.stream().map(menuMapper::toDto).collect(Collectors.toList());
+    List<Long> roles =
+        roleRepository.findByUserId(userId).stream().map(Role::getId).collect(Collectors.toList());
+    List <Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roles, 2);
+    return menuMapper.toDto(menus);
+  }
+
+  public PageVo<MenuDto> findByRole(List<Long> roleIds, Integer type, Pageable pageable) {
+    Page<Menu> page =
+        menuRepository.findByRoleIdsAndTypeNotByPage(
+            roleIds, Objects.isNull(type) ? Integer.MAX_VALUE : type, pageable);
+    return ConvterUtil.toPageVo(page, menuMapper);
   }
 
   public List<MenuDto> buildTree(List<MenuDto> menuDtos) {
@@ -77,6 +89,25 @@ public class MenuServiceImpl implements MenuService {
       trees = menuDtos.stream().filter(s -> !ids.contains(s.getId())).collect(Collectors.toList());
     }
     return trees;
+  }
+
+  @Override
+  public PageVo<MenuDto> queryAll(MenuQueryCriteria criteria, Pageable pageable) {
+    Page<Menu> page =
+        menuRepository.findAll(
+            (root, criteriaQuery, criteriaBuilder) ->
+                QueryHelper.getPredicate(root, criteria, criteriaBuilder),
+            pageable);
+    return ConvterUtil.toPageVo(page,menuMapper);
+  }
+
+  @Override
+  public List<MenuDto> queryAll(MenuQueryCriteria criteria) {
+    List<Menu> menus =
+        menuRepository.findAll(
+            (root, criteriaQuery, criteriaBuilder) ->
+                QueryHelper.getPredicate(root, criteria, criteriaBuilder));
+    return menuMapper.toDto(menus);
   }
 
   public List<MenuVo> buildMenu(List<MenuDto> menuDtos) {

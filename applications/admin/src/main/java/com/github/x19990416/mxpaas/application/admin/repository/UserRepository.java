@@ -19,4 +19,10 @@ import com.github.x19990416.mxpaas.application.admin.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {}
+import java.util.Set;
+
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+	public User findByUsername(String username);
+
+	public void deleteAllByIdIn(Set<Long> ids);
+}

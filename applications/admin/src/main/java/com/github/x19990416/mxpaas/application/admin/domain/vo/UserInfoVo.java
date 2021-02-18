@@ -15,10 +15,10 @@
  */
 package com.github.x19990416.mxpaas.application.admin.domain.vo;
 
-import com.github.x19990416.mxpaas.application.admin.service.dto.MenuDto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +26,13 @@ import java.util.Set;
 @Accessors(chain = true)
 public class UserInfoVo {
   private Set<String> roles;
-  private String name;
+
+  @NotEmpty(message = "用户名不能为空")
+  private String username;
+
+  @NotEmpty(message = "姓名不能为空")
+  private String nickname;
+
   private String avatar;
   private List<MenuVo> menus;
 }
