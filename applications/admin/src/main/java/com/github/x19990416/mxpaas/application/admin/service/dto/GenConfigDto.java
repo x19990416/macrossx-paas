@@ -18,5 +18,7 @@ public class GenConfigDto extends BaseDto {
   private String name;
   private String description;
   private String abbr;
+  private String dataSource;
+  private Integer type;
 
 }

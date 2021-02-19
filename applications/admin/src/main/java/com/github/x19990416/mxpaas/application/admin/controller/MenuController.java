@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/menu")
 @Slf4j
 @RequiredArgsConstructor
-public class MenuContorller {
+public class MenuController {
 
   private final MenuService menuService;
 
@@ -34,7 +34,13 @@ public class MenuContorller {
   public ResponseEntity<Object> build(MenuQueryCriteria criteria) {
     List<MenuDto> menus = menuService.queryAll(criteria);
     menus.sort(Comparator.comparing(MenuDto::getMenuSort));
-    return ResponseEntity.ok(menuService.buildMenu(menuService.buildTree(menus)));
+    return ResponseEntity.ok(menuService.buildTree(menus));
+  }
+
+  @GetMapping("/child")
+  public ResponseEntity<Object> child(Long pid) {
+    List<MenuDto> menus = menuService.queryMenuChild(pid);
+    return ResponseEntity.ok(menuService.buildTree(menus));
   }
 
   @GetMapping("/query/role")

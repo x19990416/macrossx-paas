@@ -21,6 +21,7 @@ public class App {
   public static void main(String[] args) {
     MenuService mservice = SpringApplication.run(App.class, args).getBean(MenuService.class);
     //System.out.println(mservice.buildTree(mservice.findByUser(1l)).size());
+    System.out.println(mservice.queryMenuChild(1l));
   }
 
   @Bean

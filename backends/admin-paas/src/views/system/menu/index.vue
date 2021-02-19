@@ -1,14 +1,32 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.blurry" placeholder="用户名" size="small" style="width: 200px;"
-                class="filter-item filter-time-margin"/>
-      <el-button v-waves class="filter-item" type="success" size="small" icon="el-icon-search"
-                 style="margin-left: 10px;" @click="handleFilter">
+      <el-input
+        v-model="listQuery.blurry"
+        placeholder="用户名"
+        size="small"
+        style="width: 200px;"
+        class="filter-item filter-time-margin"
+      />
+      <el-button
+        v-waves
+        class="filter-item"
+        type="success"
+        size="small"
+        icon="el-icon-search"
+        style="margin-left: 10px;"
+        @click="handleFilter"
+      >
         搜索
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="warning" size="small" icon="el-icon-refresh"
-                 @click="resetTemp">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="warning"
+        size="small"
+        icon="el-icon-refresh"
+        @click="resetTemp"
+      >
         重置
       </el-button>
     </div>
@@ -23,23 +41,31 @@
     <el-table
       :data="list"
       style="width: 100%"
-      row-key="name"
+      row-key="id"
       border
       lazy
       :load="load"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
-        <el-table-column label="菜单名" prop="name" align="center">
-          <template slot-scope="{row}">
-            <span>{{ row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="菜单类型" width="" align="center">
-          <template slot-scope="{row}">
-            <span>{{ getMenuType(row.type) }}</span>
-          </template>
-        </el-table-column>
+      :tree-props="{children: 'children', hasChildren: 'subCount'}"
+    >
+      <el-table-column label="菜单名" prop="title" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.title }}</span>
+        </template>
+      </el-table-column>
+      <!--
+      <el-table-column label="图标" align="center">
+        <template slot-scope="{row}">
+          <div v-html="test"></div>
 
-        <!-- <el-select v-model="value" placeholder="请选择">
+        </template>
+      </el-table-column>-->
+      <el-table-column label="菜单类型" width="" align="center">
+        <template slot-scope="{row}">
+          <span>{{ getMenuType(row.type) }}</span>
+        </template>
+      </el-table-column>
+
+      <!-- <el-select v-model="value" placeholder="请选择">
            <el-option
              v-for="item in options"
              :key="item.value"
@@ -47,77 +73,96 @@
              :value="item.value">
            </el-option>
          </el-select>-->
-        <el-table-column label="组件" width="" align="center">
-          <template slot-scope="{row}">
-            <span>{{ row.component }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="权限标识" width="" align="center">
-          <template slot-scope="{row}">
-            <span>{{ row.permission }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="说明" width="" align="center">
-          <template slot-scope="{row}">
-            <span>{{ row.description }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-          <template slot-scope="{row,$index}">
-            <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
+      <el-table-column label="组件" width="" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.component }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="权限标识" width="" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.permission }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="说明" width="" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.description }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
 
-            <el-button v-if="row.status!='deleted'" size="small" type="danger" icon="el-icon-delete"
-                       @click="handleDelete(row,$index)"/>
+          <el-button
+            v-if="row.status!='deleted'"
+            size="small"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleDelete(row,$index)"
+          />
 
-          </template>
-        </el-table-column>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getMenu"
+    />
+
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        :load="load"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+        row-key="id"
+        :tree-props="{children: 'children'}">
+        >
+        <el-form-item label="菜单名" prop="title">
+          <el-input v-model="temp.title"/>
+        </el-form-item>
+        <el-form-item label="菜单类型" prop="type">
+          <el-radio-group v-model="temp.type" @change="handleMenuTypeChange">
+            <el-radio-button label="0">目录</el-radio-button>
+            <el-radio-button label="1">菜单</el-radio-button>
+            <el-radio-button label="2">链接</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="组件" prop="component">
+          <el-input v-model="temp.component"/>
+        </el-form-item>
+        <el-form-item label="权限标识" prop="permission">
+          <el-input v-model="temp.permission"/>
+        </el-form-item>
+        <el-form-item label="Icon" prop="icon">
+          <el-input v-model="temp.icon"/>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">
+          取消
+        </el-button>
+        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
+          确认
+        </el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
+      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
+        <el-table-column prop="key" label="Channel"/>
+        <el-table-column prop="pv" label="Pv"/>
       </el-table>
-
-      <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-                  @pagination="getMenu"/>
-
-      <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px"
-                 style="width: 400px; margin-left:50px;">
-          <el-form-item label="菜单名" prop="title">
-            <el-input v-model="temp.title"/>
-          </el-form-item>
-          <el-form-item label="菜单类型" prop="type">
-            <el-radio-group v-model="temp.type" @change="handleMenuTypeChange">
-              <el-radio-button label="0">目录</el-radio-button>
-              <el-radio-button label="1">菜单</el-radio-button>
-              <el-radio-button label="2">链接</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="组件" prop="component">
-            <el-input v-model="temp.component"/>
-          </el-form-item>
-          <el-form-item label="权限标识" prop="permission">
-            <el-input v-model="temp.permission"/>
-          </el-form-item>
-          <el-form-item label="Icon" prop="icon">
-            <el-input v-model="temp.icon"/>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">
-            取消
-          </el-button>
-          <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-            确认
-          </el-button>
-        </div>
-      </el-dialog>
-
-      <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-        <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-          <el-table-column prop="key" label="Channel"/>
-          <el-table-column prop="pv" label="Pv"/>
-        </el-table>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-        </span>
-      </el-dialog>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <style>
@@ -128,9 +173,8 @@
 </style>
 <script>
   import {fetchPv, updateArticle} from '@/api/article'
-  import {deleteUser} from '@/api/user'
   import {fetchRoles} from '@/api/role'
-  import {createMenu, fetchMenus, fetchRoleMenus, build} from '@/api/menu'
+  import {build, child, createMenu, fetchMenus, fetchRoleMenus} from '@/api/menu'
   import waves from '@/directive/waves' // waves directive
   import {parseTime} from '@/utils'
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -141,6 +185,7 @@
     directives: {waves},
     data() {
       return {
+        test: '<svg-icon icon-class="404" />',
 
         tableKey: 0,
         list: null,
@@ -149,7 +194,8 @@
         listQuery: {
           page: 1,
           limit: 20,
-          blurry: undefined
+          blurry: undefined,
+          isRoot: true
         },
         roleListQuery: {
           blurry: undefined,
@@ -301,16 +347,25 @@
           }
         })
       },
-      handleDelete(row, index) {
-        deleteUser([row.id]).then(() => {
-          this.$notify({
-            title: 'Success',
-            message: 'Delete Successfully',
-            type: 'success',
-            duration: 2000
-          })
-          this.list.splice(index, 1)
+      load(tree, treeNode, resolve) {
+        child({pid: tree.id}).then(response => {
+          console.log('xxxxxxxxxxxxxxxxxxxx', response[0])
+          resolve(response)
+
         })
+      },
+      handleDelete(row, index) {
+        console.log(row)
+
+        // deleteUser([row.id]).then(() => {
+        //   this.$notify({
+        //     title: 'Success',
+        //     message: 'Delete Successfully',
+        //     type: 'success',
+        //     duration: 2000
+        //   })
+        //   this.list.splice(index, 1)
+        // })
       },
       handleFetchPv(pv) {
         fetchPv(pv).then(response => {
@@ -348,7 +403,7 @@
         }))
       },
       handleRoleChange: function (roleid) {
-        this.queryType = 1;
+        this.queryType = 1
         this.listLoading = true
         const data = {
           limit: this.listQuery.limit,
@@ -375,7 +430,7 @@
             })
           })
         } else {
-          this.menuRoot = [];
+          this.menuRoot = []
         }
       },
       getMenuType: function (type) {
@@ -389,12 +444,7 @@
           default:
             return ''
         }
-      },
-      load: function (data) {
-        console.log('data')
-
       }
-
     }
   }
 </script>

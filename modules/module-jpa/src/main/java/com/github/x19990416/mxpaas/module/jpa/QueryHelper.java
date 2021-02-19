@@ -29,12 +29,12 @@ public class QueryHelper {
       // 获取数据权限
       List<Long> dataScopes = Lists.newArrayList() /*SecurityUtils.getCurrentUserDataScope()*/;
       if (!CollectionUtils.isEmpty(dataScopes)) {
-        if (Strings.isNotBlank(permission.joinName())
-            && Strings.isNotBlank(permission.fieldName())) {
+        if (StringUtils.isNotBlank(permission.joinName())
+            && StringUtils.isNotBlank(permission.fieldName())) {
           Join join = root.join(permission.joinName(), JoinType.LEFT);
           list.add(getExpression(permission.fieldName(), join, root).in(dataScopes));
-        } else if (Strings.isBlank(permission.joinName())
-            && Strings.isNotBlank(permission.fieldName())) {
+        } else if (StringUtils.isBlank(permission.joinName())
+            && StringUtils.isNotBlank(permission.fieldName())) {
           list.add(getExpression(permission.fieldName(), null, root).in(dataScopes));
         }
       }

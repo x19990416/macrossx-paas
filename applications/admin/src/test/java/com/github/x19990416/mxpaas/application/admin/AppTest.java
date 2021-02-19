@@ -15,6 +15,7 @@
  */
 package com.github.x19990416.mxpaas.application.admin;
 
+import com.github.x19990416.mxpaas.application.admin.domain.Role;
 import com.github.x19990416.mxpaas.application.admin.repository.RoleRepository;
 import org.apache.shiro.util.Assert;
 import org.junit.jupiter.api.Test;
@@ -23,13 +24,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Set;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AppTest {
-	@Autowired
-	RoleRepository repository;
+  @Autowired RoleRepository repository;
+
   @Test
-  public void test1() {
-	repository.findByUserId(1l);
+  public void doTest() {
+    Set<Role> roles = repository.findByUserId(1l);
+    Assert.isNull(roles);
   }
 }

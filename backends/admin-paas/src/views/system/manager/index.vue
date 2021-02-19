@@ -1,14 +1,32 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.blurry" placeholder="用户名" size="small" style="width: 200px;"
-                class="filter-item filter-time-margin"/>
-      <el-button v-waves class="filter-item" type="success" size="small" icon="el-icon-search"
-                 style="margin-left: 10px;" @click="handleFilter">
+      <el-input
+        v-model="listQuery.blurry"
+        placeholder="用户名"
+        size="small"
+        style="width: 200px;"
+        class="filter-item filter-time-margin"
+      />
+      <el-button
+        v-waves
+        class="filter-item"
+        type="success"
+        size="small"
+        icon="el-icon-search"
+        style="margin-left: 10px;"
+        @click="handleFilter"
+      >
         搜索
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="warning" size="small" icon="el-icon-refresh"
-                 @click="resetTemp">
+      <el-button
+        class="filter-item"
+        style="margin-left: 10px;"
+        type="warning"
+        size="small"
+        icon="el-icon-refresh"
+        @click="resetTemp"
+      >
         重置
       </el-button>
     </div>
@@ -59,24 +77,53 @@
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
 
-          <el-button v-if="row.status!='deleted'" size="small" type="danger" icon="el-icon-delete"
-                     @click="handleDelete(row,$index)"/>
+          <el-button
+            v-if="row.status!='deleted'"
+            size="small"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleDelete(row,$index)"
+          />
 
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit"
-                @pagination="getUsers"/>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getUsers"
+    />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px"
-               style="width: 400px; margin-left:50px;">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="temp.username"/>
+      <el-form
+        ref="dataForm"
+        :rules="rules"
+        :model="temp"
+        label-position="left"
+        label-width="70px"
+        style="width: 400px; margin-left:50px;"
+      >
+        <el-form-item label="用户名" prop="name">
+          <el-input v-model="temp.name"/>
         </el-form-item>
-        <el-form-item label="昵称" prop="nickname">
-          <el-input v-model="temp.nickname"/>
+        <el-form-item label="缩写" prop="abbr">
+          <el-input v-model="temp.abbr"/>
+        </el-form-item>
+        <el-form-item label="数据源" prop="dataSource">
+          <el-input v-model="temp.dataSource"/>
+        </el-form-item>
+        <el-form-item label="系统类型" prop="type">
+          <el-select v-model="value" placeholder="请选择">
+            <el-option
+              v-for="item in sys_type_options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="说明">
           <el-input v-model="temp.description" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入"/>
@@ -111,7 +158,7 @@
 </style>
 <script>
   import {fetchPv, updateArticle} from '@/api/article'
-  import {createUser, deleteUser, fetchUsers} from '@/api/user'
+  import {createSystem, fetchSystem} from '@/api/manager'
   import waves from '@/directive/waves' // waves directive
   import {parseTime} from '@/utils'
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -122,6 +169,7 @@
     directives: {waves},
     data() {
       return {
+        sys_type_options: [{value: 1, label: "后端"}, {value: 2, label: "前端"}],
         tableKey: 0,
         list: null,
         total: 0,
@@ -155,16 +203,16 @@
       }
     },
     created() {
-      this.getUsers()
+      this.getSystem()
     },
     methods: {
-      getUsers() {
+      getSystem() {
         this.listLoading = true
         const data = {
           ...this.listQuery,
           page: this.listQuery.page > 0 ? this.listQuery.page - 1 : 0
         }
-        fetchUsers(data).then(response => {
+        fetchSystem(data).then(response => {
           this.list = response.contents
           this.total = response.total
           // Just to simulate the time of the request
@@ -216,7 +264,7 @@
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            createUser(this.temp).then(() => {
+            createSystem(this.temp).then(() => {
               this.list.unshift(this.temp)
               this.dialogFormVisible = false
               this.$notify({

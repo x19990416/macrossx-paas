@@ -15,8 +15,8 @@
  */
 package com.github.x19990416.mxpaas.application.admin.domain.vo;
 
-import ch.qos.logback.core.Layout;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.collect.Lists;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -26,12 +26,12 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Accessors(chain = true)
 public class MenuVo {
-	private String path;
-	private String component;
-	private String redirect;
-	private Boolean hidden;
-	private String name;
-	private MenuMetaVo meta;
-	private Boolean alwaysShow;
-	private List<MenuVo> children;
+  private String path;
+  private String component;
+  private String redirect;
+  private Boolean hidden;
+  private String name;
+  private MenuMetaVo meta;
+  private Boolean alwaysShow;
+  private List<MenuVo> children;
 }

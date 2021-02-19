@@ -33,4 +33,5 @@ public interface MenuService {
 	public PageVo<MenuDto> findByRole(List<Long> roleIds,Integer type, Pageable pageable);
 	public PageVo<MenuDto> queryAll(MenuQueryCriteria criteria, Pageable pageable);
 	public List<MenuDto> queryAll(MenuQueryCriteria criteria);
+	public List<MenuDto> queryMenuChild(Long pid);
 }

@@ -4,7 +4,7 @@ export function fetchSystemConfigs(data) {
   return request({
     url: '/api/system/config/query',
     method: 'get',
-    params : data
+    params: data
   })
 }
 

@@ -15,7 +15,6 @@
  */
 package com.github.x19990416.mxpaas.application.admin.service.impl;
 
-import ch.qos.logback.core.pattern.ConverterUtil;
 import com.github.x19990416.mxpaas.application.admin.domain.Menu;
 import com.github.x19990416.mxpaas.application.admin.domain.Role;
 import com.github.x19990416.mxpaas.application.admin.domain.vo.MenuMetaVo;
@@ -60,6 +59,7 @@ public class MenuServiceImpl implements MenuService {
     List <Menu> menus = menuRepository.findByRoleIdsAndTypeNot(roles, 2);
     return menuMapper.toDto(menus);
   }
+
 
   public PageVo<MenuDto> findByRole(List<Long> roleIds, Integer type, Pageable pageable) {
     Page<Menu> page =
@@ -109,6 +109,13 @@ public class MenuServiceImpl implements MenuService {
                 QueryHelper.getPredicate(root, criteria, criteriaBuilder));
     return menuMapper.toDto(menus);
   }
+
+  @Override
+  public List<MenuDto> queryMenuChild(Long pid) {
+
+    return  menuMapper.toDto(menuRepository.findByPid(pid));
+  }
+
 
   public List<MenuVo> buildMenu(List<MenuDto> menuDtos) {
     List<MenuVo> menus = Lists.newArrayList();

@@ -32,23 +32,10 @@ export function build(data) {
   })
 }
 
-export function createUser(data) {
+export function child(data) {
   return request({
-    url: '/api/'
-  })
-}
-
-export function getInfo(token) {
-  return request({
-    url: '/vue-element-admin/user/info',
+    url: '/api/menu/child',
     method: 'get',
-    params: {token}
-  })
-}
-
-export function logout() {
-  return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    params: data
   })
 }

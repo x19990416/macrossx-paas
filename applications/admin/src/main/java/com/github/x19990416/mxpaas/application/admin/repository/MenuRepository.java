@@ -26,6 +26,8 @@ import java.util.List;
 
 public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
 
+  List<Menu> findByPid(Long pid);
+
   @Query(
       value =
           "SELECT m.* FROM sys_menu m, sys_roles_menus r WHERE "

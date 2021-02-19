@@ -5,7 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
-import Layout from "@/layout/index";
+import Layout from '@/layout/index'
 
 const _import = require('./router/_import_' + process.env.NODE_ENV) // 获取组件的方法
 
@@ -37,14 +37,13 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-          const { roles,menus } = await store.dispatch('user/getInfo')
+          const { roles, menus } = await store.dispatch('user/getInfo')
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
           const menuComponents = filterAsyncRouter(menus).concat(accessRoutes)
-          //console.log(menuComponents)
+          // console.log(menuComponents)
           global.antRouter = menuComponents
-          router.addRoutes( menuComponents) // 2.动态添加路由
-
+          router.addRoutes(menuComponents) // 2.动态添加路由
 
           // dynamically add accessible routes
 
@@ -80,9 +79,9 @@ function filterAsyncRouter(asyncRouterMap) {
     if (route.component) {
       if (route.component === 'Layout') {
         route.component = Layout
-        } else {
-            route.component = _import(route.component) // 导入组件
-        }
+      } else {
+        route.component = _import(route.component) // 导入组件
+      }
     }
     if (route.children && route.children.length) {
       route.children = filterAsyncRouter(route.children)

@@ -10,7 +10,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.util.List;
 
-
 @Data
 @Entity
 @Table(name = "sys_gen_config")
@@ -26,6 +25,8 @@ public class SysGenConfig {
   private String name;
   private String description;
   private String abbr;
+  private String dataSource;
+  private Integer type;
 
   @OneToMany
   @JoinTable(
