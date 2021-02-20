@@ -15,3 +15,12 @@ export function createSystem(data) {
     data
   })
 }
+
+export  function updateSystem(data) {
+  return request({
+    url: '/api/system/config/update',
+    method: 'post',
+    data
+  })
+
+}
