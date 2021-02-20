@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface SysGenConfigRepository
     extends JpaRepository<SysGenConfig, Long>, JpaSpecificationExecutor<SysGenConfig> {
-	public SysGenConfig findByName(String name);
+	public SysGenConfig findByNameOrAbbr(String name, String abbr);
 }

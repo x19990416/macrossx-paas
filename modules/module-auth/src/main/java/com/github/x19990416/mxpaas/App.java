@@ -86,7 +86,6 @@ public class App {
    */
   @RequestMapping("/login")
   public String index(@Validated UserPwdLogin login) {
-    log.info(">>>>>>>>>>>>> login \t{}", login);
     Subject subject = SecurityUtils.getSubject();
     SysUserToken usernamePasswordToken = new SysUserToken(login.getUsername(), login.getPassword());
     subject.login(usernamePasswordToken);
@@ -100,10 +99,5 @@ public class App {
     System.out.println("程序异常：" + ex.toString());
     return ex.getMessage();
   }
-  @AnonymousAccess
-  @GetMapping("/123")
-  public String do123() {
-    log.info("_____________do 123");
-    return "213";
-  }
+
 }

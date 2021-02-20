@@ -12,4 +12,6 @@ public interface GenerateService {
 
   public void createSysConfig(GenConfigDto resourceDto);
 
+  public void updateSysConfig(GenConfigDto resourceDto);
+
 }

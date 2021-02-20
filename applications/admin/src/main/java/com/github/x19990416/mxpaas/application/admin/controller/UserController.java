@@ -45,7 +45,6 @@ public class UserController {
 
   @PostMapping("/create")
   public ResponseEntity<Object> create(@Validated @RequestBody UserInfoVo userInfo) {
-    log.info("{}",userInfo);
     userService.createUser(
         new UserDto()
             .setUsername(userInfo.getUsername())
