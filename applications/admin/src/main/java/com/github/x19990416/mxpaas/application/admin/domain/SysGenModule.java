@@ -21,9 +21,16 @@ public class SysGenModule {
   @Schema(name = "ID", hidden = true)
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
   private String name;
-  private String group;
+  private String groupId;
   private String version;
   private String description;
+  private String artifactId;
+
+  @ManyToOne(cascade = {CascadeType.ALL})
+  @JoinTable(
+      name = "sys_gen_config_module",
+      joinColumns = {@JoinColumn(name = "sys_module_id", referencedColumnName = "id")},
+      inverseJoinColumns = {@JoinColumn(name = "sys_id", referencedColumnName = "id")})
+  private SysGenConfig sysGenConfig;
 }

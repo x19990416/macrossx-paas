@@ -16,11 +16,12 @@
 package com.github.x19990416.mxpaas.application.admin.service.impl;
 
 import com.github.x19990416.mxpaas.application.admin.domain.SysGenConfig;
+import com.github.x19990416.mxpaas.application.admin.domain.SysGenModule;
 import com.github.x19990416.mxpaas.application.admin.repository.SysGenConfigRepository;
+import com.github.x19990416.mxpaas.application.admin.repository.SysGenModuleRepository;
 import com.github.x19990416.mxpaas.application.admin.service.GenerateService;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigDto;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigMapper;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigQueryCriteria;
+import com.github.x19990416.mxpaas.application.admin.service.dto.*;
+import com.github.x19990416.mxpaas.application.admin.utils.ConvterUtil;
 import com.github.x19990416.mxpaas.common.exception.EntityExistException;
 import com.github.x19990416.mxpaas.common.exception.EntityNotFoundException;
 import com.github.x19990416.mxpaas.common.vo.PageVo;
@@ -33,12 +34,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class GenerateServiceImpl implements GenerateService {
   private final SysGenConfigRepository genConfigRepository;
   private final GenConfigMapper genConfigMapper;
+  private final SysGenModuleRepository genModuleRepository;
+  private final GenModuleMapper genModuleMapper;
 
   public PageVo<GenConfigDto> querySysConfig(GenConfigQueryCriteria criteria, Pageable pageable) {
     Page<SysGenConfig> page =
@@ -55,14 +60,16 @@ public class GenerateServiceImpl implements GenerateService {
 
   @Transactional
   public void createSysConfig(GenConfigDto resourceDto) {
-    if (genConfigRepository.findByNameOrAbbr(resourceDto.getName(), resourceDto.getAbbr())
-        != null) {
+    if (!genConfigRepository
+        .findByNameOrAbbr(resourceDto.getName(), resourceDto.getAbbr())
+        .isEmpty()) {
       throw new EntityExistException(SysGenConfig.class, "name", resourceDto.getName());
     }
     genConfigRepository.save(genConfigMapper.toEntity(resourceDto));
   }
 
   @Override
+  @Transactional
   public void updateSysConfig(GenConfigDto resourceDto) {
     SysGenConfig sysGenConfig =
         genConfigRepository
@@ -71,7 +78,56 @@ public class GenerateServiceImpl implements GenerateService {
                 () ->
                     new EntityNotFoundException(
                         resourceDto.getClass(), "id", String.valueOf(resourceDto.getId())));
-    BeanUtils.copyProperties(resourceDto,sysGenConfig,"id","abbr");
+    BeanUtils.copyProperties(resourceDto, sysGenConfig, "id", "abbr");
     genConfigRepository.save(sysGenConfig);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void deleteSysConfig(Set<Long> ids) {
+    genConfigRepository.deleteAllByIdIn(ids);
+  }
+
+  @Override
+  public PageVo<GenModuleDto> querySysModule(GenModuleQueryCriteria criteria, Pageable pageable) {
+    Page<SysGenModule> page =
+        genModuleRepository.findAll(
+            (root, criteriaQuery, criteriaBuilder) ->
+                QueryHelper.getPredicate(root, criteria, criteriaBuilder),
+            pageable);
+    return ConvterUtil.toPageVo(page, genModuleMapper);
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void createSysModule(GenModuleDto resourceDto) {
+    if (!genModuleRepository.findByName(resourceDto.getName()).isEmpty()) {
+      throw new EntityExistException(SysGenModule.class, "name", resourceDto.getName());
+    }
+    genModuleRepository.save(genModuleMapper.toEntity(resourceDto));
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public void updateSysModule(GenModuleDto resourceDto) {
+    log.info("{}",resourceDto);
+    SysGenModule sysGenModule =
+        genModuleRepository
+            .findByIdAndNameAndGroupIdAndArtifactId(
+                resourceDto.getId(),
+                resourceDto.getName(),
+                resourceDto.getGroupId(),
+                resourceDto.getArtifactId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        resourceDto.getClass(), "id", String.valueOf(resourceDto.getId())));
+    BeanUtils.copyProperties(resourceDto, sysGenModule, "id", "name");
+    genModuleRepository.save(sysGenModule);
+  }
+
+  @Override
+  public void deleteSysModule(Set<Long> ids) {
+    genModuleRepository.deleteAllByIdIn(ids);
   }
 }

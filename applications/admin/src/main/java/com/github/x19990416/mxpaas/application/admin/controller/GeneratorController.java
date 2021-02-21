@@ -16,9 +16,12 @@
 package com.github.x19990416.mxpaas.application.admin.controller;
 
 import com.github.x19990416.mxpaas.application.admin.domain.vo.SysConfigVo;
+import com.github.x19990416.mxpaas.application.admin.domain.vo.SysModuleVo;
 import com.github.x19990416.mxpaas.application.admin.service.GenerateService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigDto;
 import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigQueryCriteria;
+import com.github.x19990416.mxpaas.application.admin.service.dto.GenModuleDto;
+import com.github.x19990416.mxpaas.application.admin.service.dto.GenModuleQueryCriteria;
 import com.github.x19990416.mxpaas.common.exception.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +44,7 @@ import java.util.Objects;
 public class GeneratorController {
   private final GenerateService generateService;
 
+  @Operation(method = "系统查询")
   @GetMapping("/config/query")
   public ResponseEntity<Object> sysConfigQuery(GenConfigQueryCriteria criteria, Pageable pageable) {
     return ResponseEntity.ok(generateService.querySysConfig(criteria, pageable));
@@ -65,9 +69,39 @@ public class GeneratorController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  @Operation(method = "模块查询")
+  @GetMapping("/module/query")
+  public ResponseEntity<Object> moduleQuery(GenModuleQueryCriteria criteria, Pageable pageable) {
+    return ResponseEntity.ok(generateService.querySysModule(criteria, pageable));
+  }
+
+  @Operation(method = "新增模块")
+  @PostMapping("/module/create")
+  public ResponseEntity<Object> createSysModule(@Validated @RequestBody SysModuleVo sysModuleVo) {
+    log.info("{}",sysModuleVo);
+    generateService.createSysModule(toDto(sysModuleVo));
+    return new ResponseEntity<>(HttpStatus.CREATED);
+  }
+
+  @Operation(method = "更新模块")
+  @PostMapping("/module/update")
+  public ResponseEntity<Object> updateModule(@Validated @RequestBody SysModuleVo sysModuleVo) {
+    if (Objects.isNull(sysModuleVo.getId())) {
+      throw new EntityNotFoundException(sysModuleVo.getClass(), "id", null);
+    }
+    generateService.updateSysModule(toDto(sysModuleVo));
+
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
   private static GenConfigDto toDto(SysConfigVo sysConfigVo) {
     GenConfigDto dto = new GenConfigDto();
     BeanUtils.copyProperties(sysConfigVo, dto);
+    return dto;
+  }
+
+  private static GenModuleDto toDto(SysModuleVo sysModuleVo) {
+    GenModuleDto dto = new GenModuleDto();
+    BeanUtils.copyProperties(sysModuleVo, dto);
     return dto;
   }
 }

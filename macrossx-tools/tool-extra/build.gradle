@@ -2,9 +2,6 @@ plugins {
     id 'java-library'
 }
 
-group 'com.github.x19990416.macrossx.tools'
-version '1.0'
-
 repositories {
     mavenCentral()
 }

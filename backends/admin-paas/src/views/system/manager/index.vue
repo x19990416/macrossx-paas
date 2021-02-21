@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input
         v-model="listQuery.blurry"
-        placeholder="用户名"
+        placeholder="系统名"
         size="small"
         style="width: 200px;"
         class="filter-item filter-time-margin"
@@ -47,9 +47,13 @@
           highlight-current-row
           @selection-change="handleSelectionChange"
         >
-          <el-table-column
-            type="selection"
-            width="55" disabled="true">
+          <el-table-column label="选择" width="60px" align="center" header-align="center">
+            <template slot-scope="scope">
+              <el-radio :label="scope.$index" v-model="tempRadio"
+                        @change.native="getTemplateRow(scope.$index,scope.row)" style="margin-left: 10px;" >
+                <span></span></el-radio>
+            </template>
+
           </el-table-column>
           <el-table-column label="系统名" width="150px" align="center">
             <template slot-scope="{row}">
@@ -78,14 +82,15 @@
           </el-table-column>
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="{row,$index}">
-              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(row)"/>
+              <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
               <el-button
                 v-if="row.status!='deleted'"
-                size="mini"
+                size="small"
                 type="danger"
                 icon="el-icon-delete"
                 @click="handleDelete(row,$index)"
               />
+
             </template>
           </el-table-column>
         </el-table>
@@ -99,13 +104,17 @@
         />
       </el-col>
       <el-col :span=8>
+        <el-card class="box-card" shadow="never">
+          <div slot="header" class="clearfix">
+            <span>模块</span>
+          </div>
         <el-tree
           :data="modules"
           node-key="id"
           :props="moduleTreeProps"
           show-checkbox>
         </el-tree>
-
+        </el-card>
       </el-col>
     </el-row>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -170,7 +179,7 @@
 </style>
 <script>
   import {fetchPv} from '@/api/article'
-  import {createSystem, fetchSystem, updateSystem} from '@/api/manager'
+  import {createSystem, fetchSystem, updateSystem, fetchModule} from '@/api/manager'
   import waves from '@/directive/waves' // waves directive
   import {parseTime} from '@/utils'
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -181,6 +190,8 @@
     directives: {waves},
     data() {
       return {
+        selectedRow: {},
+        tempRadio: false,
         sys_type_options: [{value: 1, label: "后端"}, {value: 2, label: "前端"}],
         selectedSystem: [],
         modules: null,
@@ -227,7 +238,13 @@
     update(v){console.log(v)},
     methods: {
       getModule(){
-
+        fetchModule().then(response => {
+          this.modules = response.contents
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
       },
       getSystem() {
         this.listLoading = true
@@ -382,6 +399,11 @@
         } else {
           this.selectedSystem = []
         }
+      },
+      getTemplateRow(index,row){
+        this.selectedRow = row
+        console.log(row.id)
+
       }
     }
   }

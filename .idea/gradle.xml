@@ -10,8 +10,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/applications" />
-            <option value="$PROJECT_DIR$/applications/admin" />
             <option value="$PROJECT_DIR$/macrossx-tools" />
             <option value="$PROJECT_DIR$/macrossx-tools/tool-extra" />
             <option value="$PROJECT_DIR$/modules" />

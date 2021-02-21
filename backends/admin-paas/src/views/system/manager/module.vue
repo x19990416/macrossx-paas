@@ -35,79 +35,66 @@
         新增
       </el-button>
     </div>
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80">
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="模块名" width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="组织名" width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.groupId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="标识符" width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{row.artifactId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="版本号" width="150px" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.version }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="说明" align="center">
+        <template slot-scope="{row}">
+          <span>{{ row.description?row.description:'-' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
+          <el-button
+            v-if="row.status!='deleted'"
+            size="small"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleDelete(row,$index)"
+          />
+        </template>
+      </el-table-column>
+    </el-table>
 
-    <el-row :gutter="24">
-      <el-col :span=16>
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          :data="list"
-          border
-          fit
-          highlight-current-row
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            type="selection"
-            width="55" disabled="true">
-          </el-table-column>
-          <el-table-column label="系统名" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="缩写" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.abbr }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="系统类型" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ formatType(row.type) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="数据源" width="150px" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.dataSource }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="说明" align="center">
-            <template slot-scope="{row}">
-              <span>{{ row.description?row.description:'-' }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-            <template slot-scope="{row,$index}">
-              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleUpdate(row)"/>
-              <el-button
-                v-if="row.status!='deleted'"
-                size="mini"
-                type="danger"
-                icon="el-icon-delete"
-                @click="handleDelete(row,$index)"
-              />
-            </template>
-          </el-table-column>
-        </el-table>
-
-        <pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          @pagination="getSystem"
-        />
-      </el-col>
-      <el-col :span=8>
-        <el-tree
-          :data="modules"
-          node-key="id"
-          :props="moduleTreeProps"
-          show-checkbox>
-        </el-tree>
-
-      </el-col>
-    </el-row>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.limit"
+      @pagination="getModule"
+    />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -117,25 +104,20 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-form-item label="系统名" prop="name">
+        <el-form-item label="模块名" prop="name">
           <el-input v-model="temp.name" :disabled="(dialogStatus==='update' && temp.name)?true:false"/>
         </el-form-item>
-        <el-form-item label="缩写" prop="abbr">
-          <el-input v-model="temp.abbr" maxlength="10" minlength="3" show-word-limit
-                    :disabled="(dialogStatus==='update' && temp.abbr)?true:false"/>
+        <el-form-item label="组织名" prop="groupId">
+          <el-input v-model="temp.groupId" placeholder="请输入组织名"
+                    :disabled="(dialogStatus==='update' && temp.groupId)?true:false"/>
         </el-form-item>
-        <el-form-item label="系统类型" prop="type">
-          <el-select v-model="temp.type" placeholder="请选择" :disabled="(dialogStatus==='update' && temp.type)?true:false">
-            <el-option
-              v-for="item in sys_type_options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+        <el-form-item label="标识符" prop="artifactId">
+          <el-input v-model="temp.artifactId" placeholder="请输入标识符"
+                    :disabled="(dialogStatus==='update' && temp.artifactId)?true:false"/>
         </el-form-item>
-        <el-form-item label="数据源" prop="dataSource">
-          <el-input v-model="temp.dataSource"/>
+        <el-form-item label="版本号" prop="version">
+          <el-input v-model="temp.version" placeholder="请输入版本号"
+                    />
         </el-form-item>
         <el-form-item label="说明">
           <el-input v-model="temp.description" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入"/>
@@ -169,10 +151,8 @@
 
 </style>
 <script>
-  import {fetchPv} from '@/api/article'
-  import {createSystem, fetchSystem, updateSystem} from '@/api/manager'
+  import {createModule, fetchModule, updateModule} from '@/api/manager'
   import waves from '@/directive/waves' // waves directive
-  import {parseTime} from '@/utils'
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
   export default {
@@ -200,9 +180,8 @@
         temp: {
           name: undefined,
           description: undefined,
-          abbr: undefined,
-          type: undefined,
-          dataSource: undefined
+          groupId: undefined,
+          artifactId: undefined,
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -214,28 +193,24 @@
         pvData: [],
         rules: {
           name: [{required: true, message: 'name is required', trigger: 'blue'}],
-          abbr: [{required: true, message: 'abbr is required', trigger: 'blue'}],
-          type: [{required: true, message: 'type is required', trigger: 'blue'}]
+          group: [{required: true, message: 'group is required', trigger: 'blue'}],
+          version: [{required: true, message: 'version is required', trigger: 'blue'}],
+          artifact: [{required: true, message: 'artifact is required', trigger: 'blue'}]
         },
         downloadLoading: false
       }
     },
     created() {
-      this.getSystem()
       this.getModule()
     },
-    update(v){console.log(v)},
     methods: {
-      getModule(){
-
-      },
-      getSystem() {
+      getModule() {
         this.listLoading = true
         const data = {
           ...this.listQuery,
           page: this.listQuery.page > 0 ? this.listQuery.page - 1 : 0
         }
-        fetchSystem(data).then(response => {
+        fetchModule(data).then(response => {
           this.list = response.contents
           this.total = response.total
           // Just to simulate the time of the request
@@ -246,29 +221,15 @@
       },
       handleFilter() {
         this.listQuery.page = 1
-        this.getSystem()
-      },
-      sortChange(data) {
-        const {prop, order} = data
-        if (prop === 'id') {
-          this.sortByID(order)
-        }
-      },
-      sortByID(order) {
-        if (order === 'ascending') {
-          this.listQuery.sort = '+id'
-        } else {
-          this.listQuery.sort = '-id'
-        }
-        this.handleFilter()
+        this.getModule()
       },
       resetTemp() {
         this.temp = {
           name: undefined,
-          abbr: undefined,
+          group: undefined,
           description: undefined,
           id: undefined,
-          type: undefined
+          artifact: undefined
         }
       },
       handleCreate() {
@@ -282,7 +243,7 @@
       createData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            createSystem(this.temp).then(() => {
+            createModule(this.temp).then(() => {
               this.list.unshift(this.temp)
               this.dialogFormVisible = false
               this.$notify({
@@ -307,7 +268,7 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateSystem(this.temp).then(() => {
+            updateModule(this.temp).then(() => {
               this.dialogFormVisible = false
               this.$notify({
                 title: 'Success',
@@ -315,7 +276,7 @@
                 type: 'success',
                 duration: 2000
               })
-              this.getSystem()
+              this.getModule()
             })
           }
         })
@@ -343,45 +304,9 @@
           name: ''
         }
       },
-      handleDownload() {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-          const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-          const data = this.formatJson(filterVal)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: 'table-list'
-          })
-          this.downloadLoading = false
-        })
-      },
-      formatJson(filterVal) {
-        return this.list.map(v => filterVal.map(j => {
-          if (j === 'timestamp') {
-            return parseTime(v[j])
-          } else {
-            return v[j]
-          }
-        }))
-      },
-      formatType(typeValue) {
-        let list = this.sys_type_options.filter(e => e.value === typeValue)
-        return list.length === 1 ? list[0].label : ''
-      },
       getSortClass: function (key) {
         const sort = this.listQuery.sort
         return sort === `+${key}` ? 'ascending' : 'descending'
-      },
-      handleSelectionChange(val) {
-        console.log(typeof val)
-        if (typeof val === "Array") {
-          console.log(val[0].id)
-          this.selectedSystem = [val]
-        } else {
-          this.selectedSystem = []
-        }
       }
     }
   }

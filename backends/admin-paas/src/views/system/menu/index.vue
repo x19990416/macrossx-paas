@@ -91,7 +91,6 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
           <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
-
           <el-button
             v-if="row.status!='deleted'"
             size="small"
@@ -123,9 +122,8 @@
         style="width: 400px; margin-left:50px;"
         row-key="id"
         :tree-props="{children: 'children'}">
-        >
         <el-form-item label="菜单名" prop="title">
-          <el-input v-model="temp.title"/>
+          <el-input v-model="temp.title" />
         </el-form-item>
         <el-form-item label="菜单类型" prop="type">
           <el-radio-group v-model="temp.type" @change="handleMenuTypeChange">
@@ -135,10 +133,10 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="组件" prop="component">
-          <el-input v-model="temp.component"/>
+          <el-input v-model="temp.component" />
         </el-form-item>
         <el-form-item label="权限标识" prop="permission">
-          <el-input v-model="temp.permission"/>
+          <el-input v-model="temp.permission" />
         </el-form-item>
         <el-form-item label="Icon" prop="icon">
           <el-input v-model="temp.icon"/>
