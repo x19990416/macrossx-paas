@@ -17,10 +17,11 @@ package com.github.x19990416.mxpaas.tool.generator.utils;
 
 import com.github.x19990416.mxpaas.tool.generator.domain.ColumnInfo;
 import com.github.x19990416.mxpaas.tool.generator.domain.GenConfig;
-import com.github.x19990416.tools.extra.template.TemplateConfig;
-import com.github.x19990416.tools.extra.template.TemplateEngine;
-import com.github.x19990416.tools.extra.template.engine.TemplateFactory;
-import com.github.x19990416.tools.extra.template.engine.freemarker.FreemarkerEngine;
+import com.github.x19990416.tools.constant.Template;
+import com.github.x19990416.tools.constant.TemplateConfig;
+import com.github.x19990416.tools.constant.TemplateEngine;
+import com.github.x19990416.tools.constant.engine.TemplateFactory;
+import com.github.x19990416.tools.constant.engine.freemarker.FreemarkerEngine;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Charsets;
 import com.google.common.base.Converter;
@@ -102,7 +103,7 @@ public class GenUtil {
                     "template", Charsets.UTF_8, TemplateConfig.ResourceMode.CLASSPATH));
     for (String templateName : templates) {
       Map<String, Object> map = new HashMap<>(1);
-      com.github.x19990416.tools.extra.template.Template template =
+      Template template =
           engine.getInstance("generator/admin/" + templateName + ".ftl");
       map.put("content", template.render(genMap));
       map.put("name", templateName);
@@ -112,7 +113,7 @@ public class GenUtil {
     templates = getFrontTemplateNames();
     for (String templateName : templates) {
       Map<String, Object> map = new HashMap<>(1);
-      com.github.x19990416.tools.extra.template.Template template =
+      Template template =
           engine.getInstance("generator/front/" + templateName + ".ftl");
       map.put(templateName, template.render(genMap));
       map.put("content", template.render(genMap));
@@ -144,7 +145,7 @@ public class GenUtil {
     // 生成后端代码
     List<String> templates = getAdminTemplateNames();
     for (String templateName : templates) {
-      com.github.x19990416.tools.extra.template.Template template =
+      Template template =
           engine.getInstance("generator/admin/" + templateName + ".ftl");
       String filePath =
           getAdminFilePath(
@@ -164,7 +165,7 @@ public class GenUtil {
     // 生成前端代码
     templates = getFrontTemplateNames();
     for (String templateName : templates) {
-      com.github.x19990416.tools.extra.template.Template template =
+      Template template =
           engine.getInstance("generator/front/" + templateName + ".ftl");
       String path = tempPath + "eladmin-web" + File.separator;
       String apiPath = path + "src" + File.separator + "api" + File.separator;
@@ -202,7 +203,7 @@ public class GenUtil {
     // 生成后端代码
     List<String> templates = getAdminTemplateNames();
     for (String templateName : templates) {
-      com.github.x19990416.tools.extra.template.Template template =
+      Template template =
           engine.getInstance("generator/admin/" + templateName + ".ftl");
       String rootPath = System.getProperty("user.dir");
       String filePath =
@@ -222,7 +223,7 @@ public class GenUtil {
     // 生成前端代码
     templates = getFrontTemplateNames();
     for (String templateName : templates) {
-      com.github.x19990416.tools.extra.template.Template template =
+      Template template =
           engine.getInstance("generator/front/" + templateName + ".ftl");
       String filePath =
           getFrontFilePath(
@@ -499,7 +500,7 @@ public class GenUtil {
 
   private static void genFile(
       File file,
-      com.github.x19990416.tools.extra.template.Template template,
+      Template template,
       Map<String, Object> map)
       throws Exception {
 

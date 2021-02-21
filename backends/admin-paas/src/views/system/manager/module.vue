@@ -35,66 +35,98 @@
         新增
       </el-button>
     </div>
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80">
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="模块名" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="组织名" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.groupId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="标识符" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{row.artifactId }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="版本号" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.version }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="说明" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.description?row.description:'-' }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
-          <el-button
-            v-if="row.status!='deleted'"
-            size="small"
-            type="danger"
-            icon="el-icon-delete"
-            @click="handleDelete(row,$index)"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-row :gutter="24">
+      <el-col :span="18">
+        <el-table
+          :key="tableKey"
+          v-loading="listLoading"
+          :data="list"
+          border
+          fit
+          highlight-current-row
+        >
+          <el-table-column label="选择" width="60px" align="center" header-align="center">
+            <template slot-scope="scope">
+              <el-radio
+                v-model="tempRadio"
+                :label="scope.$index"
+                style="margin-left: 10px;"
+                @change.native="getTemplateRow(scope.$index,scope.row)"
+              >
+                <span/></el-radio>
+            </template>
 
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getModule"
-    />
+          </el-table-column>
+          <el-table-column label="模块名" width="" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="组织名" width="" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.groupId }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="标识符" width="" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.artifactId }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="版本号" width="" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.version }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="仓库" align="center">
+            <template slot-scope="{row}">
+              <span>Maven-snap</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="说明" align="center">
+            <template slot-scope="{row}">
+              <span>{{ row.description?row.description:'-' }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="{row,$index}">
+              <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
+              <el-button
+                v-if="row.status!='deleted'"
+                size="small"
+                type="danger"
+                icon="el-icon-delete"
+                @click="handleDelete(row,$index)"
+              />
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="listQuery.page"
+          :limit.sync="listQuery.limit"
+          @pagination="getModule"
+        />
+      </el-col>
+      <el-col :span="6">
+        <el-card class="box-card" shadow="never">
+          <div slot="header" class="clearfix">
+            <span>相关数据库表</span>
+            <el-button style="float: right; padding: 3px 0" type="text" @click="handleTableSave">保存</el-button>
+          </div>
+          <el-tree
+            :data="tables"
+            :props="tablesTreeProps"
+            show-checkbox
+            node-key="name"
+            :default-checked-keys="selectedTables"
+            ref="table"
+          />
+        </el-card>
+      </el-col>
+    </el-row>
+
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form
         ref="dataForm"
@@ -108,16 +140,24 @@
           <el-input v-model="temp.name" :disabled="(dialogStatus==='update' && temp.name)?true:false"/>
         </el-form-item>
         <el-form-item label="组织名" prop="groupId">
-          <el-input v-model="temp.groupId" placeholder="请输入组织名"
-                    :disabled="(dialogStatus==='update' && temp.groupId)?true:false"/>
+          <el-input
+            v-model="temp.groupId"
+            placeholder="请输入组织名"
+            :disabled="(dialogStatus==='update' && temp.groupId)?true:false"
+          />
         </el-form-item>
         <el-form-item label="标识符" prop="artifactId">
-          <el-input v-model="temp.artifactId" placeholder="请输入标识符"
-                    :disabled="(dialogStatus==='update' && temp.artifactId)?true:false"/>
+          <el-input
+            v-model="temp.artifactId"
+            placeholder="请输入标识符"
+            :disabled="(dialogStatus==='update' && temp.artifactId)?true:false"
+          />
         </el-form-item>
         <el-form-item label="版本号" prop="version">
-          <el-input v-model="temp.version" placeholder="请输入版本号"
-                    />
+          <el-input
+            v-model="temp.version"
+            placeholder="请输入版本号"
+          />
         </el-form-item>
         <el-form-item label="说明">
           <el-input v-model="temp.description" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="请输入"/>
@@ -136,7 +176,6 @@
     <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
         <el-table-column prop="key" label="Channel"/>
-        <el-table-column prop="pv" label="Pv"/>
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
@@ -151,7 +190,7 @@
 
 </style>
 <script>
-  import {createModule, fetchModule, updateModule} from '@/api/manager'
+  import {createModule, fetchModule, fetchTables, updateModule} from '@/api/manager'
   import waves from '@/directive/waves' // waves directive
   import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
@@ -161,10 +200,12 @@
     directives: {waves},
     data() {
       return {
-        sys_type_options: [{value: 1, label: "后端"}, {value: 2, label: "前端"}],
+        tempRadio: null,
+        selectedTables: null,
+        sys_type_options: [{value: 1, label: '后端'}, {value: 2, label: '前端'}],
         selectedSystem: [],
-        modules: null,
-        moduleTreeProps: {
+        tables: null,
+        tablesTreeProps: {
           children: 'children',
           label: 'name'
         },
@@ -181,7 +222,7 @@
           name: undefined,
           description: undefined,
           groupId: undefined,
-          artifactId: undefined,
+          artifactId: undefined
         },
         dialogFormVisible: false,
         dialogStatus: '',
@@ -193,17 +234,28 @@
         pvData: [],
         rules: {
           name: [{required: true, message: 'name is required', trigger: 'blue'}],
-          group: [{required: true, message: 'group is required', trigger: 'blue'}],
+          groupId: [{required: true, message: 'group is required', trigger: 'blue'}],
           version: [{required: true, message: 'version is required', trigger: 'blue'}],
-          artifact: [{required: true, message: 'artifact is required', trigger: 'blue'}]
+          artifactId: [{required: true, message: 'artifact is required', trigger: 'blue'}]
         },
         downloadLoading: false
       }
     },
     created() {
       this.getModule()
+      this.getTable()
     },
     methods: {
+      getTable() {
+        this.listLoading = true
+        fetchTables().then(response => {
+          this.tables = response
+          // Just to simulate the time of the request
+          setTimeout(() => {
+            this.listLoading = false
+          }, 1.5 * 1000)
+        })
+      },
       getModule() {
         this.listLoading = true
         const data = {
@@ -281,6 +333,20 @@
           }
         })
       },
+      handleTableSave() {
+        if (this.selectedRow) {
+          this.selectedRow.tables = this.$refs.table.getCheckedNodes().filter(o => !o.children).map(entity => entity.name)
+          updateModule(this.selectedRow).then(() => {
+            this.$notify({
+              title: 'Success',
+              message: 'update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+
+      },
       handleDelete(row, index) {
         deleteUser([row.id]).then(() => {
           this.$notify({
@@ -292,21 +358,19 @@
           this.list.splice(index, 1)
         })
       },
-      handleFetchPv(pv) {
-        fetchPv(pv).then(response => {
-          this.pvData = response.data.pvData
-          this.dialogPvVisible = true
-        })
-      },
       handleClearFilter() {
         this.listQuery = {
           ...this.listQuery,
           name: ''
         }
       },
-      getSortClass: function (key) {
-        const sort = this.listQuery.sort
-        return sort === `+${key}` ? 'ascending' : 'descending'
+      getTemplateRow(index, row) {
+        this.selectedRow = row
+        fetchModule({id: row.id}).then(response => {
+          if (response.contents && response.contents.length === 1) {
+            this.selectedTables = response.contents[0].tables
+          }
+        })
       }
     }
   }

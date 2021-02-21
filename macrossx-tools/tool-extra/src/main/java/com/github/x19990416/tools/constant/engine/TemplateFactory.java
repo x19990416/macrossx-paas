@@ -13,27 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.tools.extra.template;
+package com.github.x19990416.tools.constant.engine;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import com.github.x19990416.tools.constant.TemplateEngine;
 
-import java.nio.charset.Charset;
+import java.lang.reflect.InvocationTargetException;
 
-@Data
-@RequiredArgsConstructor
-public class TemplateConfig {
-  private final String path;
-  private final Charset charset;
-  private final ResourceMode resourceMode;
-  private Class<? extends TemplateEngine> engine;
-
-
-  public static enum ResourceMode {
-    CLASSPATH,
-    FILE,
-    WEB_ROOT,
-    STRING,
-    COMPOSITE
+public class TemplateFactory {
+  public static TemplateEngine getTemplateEngine(Class<? extends TemplateEngine> engineType)
+      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+          InstantiationException {
+    return engineType.getDeclaredConstructor().newInstance();
   }
 }

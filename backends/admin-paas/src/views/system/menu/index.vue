@@ -90,7 +90,7 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)"/>
+          <el-button type="primary" size="small" icon="el-icon-edit" @click="handleUpdate(row)" />
           <el-button
             v-if="row.status!='deleted'"
             size="small"
@@ -121,7 +121,8 @@
         label-width="70px"
         style="width: 400px; margin-left:50px;"
         row-key="id"
-        :tree-props="{children: 'children'}">
+        :tree-props="{children: 'children'}"
+      >
         <el-form-item label="菜单名" prop="title">
           <el-input v-model="temp.title" />
         </el-form-item>
@@ -139,7 +140,7 @@
           <el-input v-model="temp.permission" />
         </el-form-item>
         <el-form-item label="Icon" prop="icon">
-          <el-input v-model="temp.icon"/>
+          <el-input v-model="temp.icon" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -154,8 +155,8 @@
 
     <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
       <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel"/>
-        <el-table-column prop="pv" label="Pv"/>
+        <el-table-column prop="key" label="Channel" />
+        <el-table-column prop="pv" label="Pv" />
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
@@ -170,279 +171,278 @@
 
 </style>
 <script>
-  import {fetchPv, updateArticle} from '@/api/article'
-  import {fetchRoles} from '@/api/role'
-  import {build, child, createMenu, fetchMenus, fetchRoleMenus} from '@/api/menu'
-  import waves from '@/directive/waves' // waves directive
-  import {parseTime} from '@/utils'
-  import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { fetchPv, updateArticle } from '@/api/article'
+import { fetchRoles } from '@/api/role'
+import { build, child, createMenu, fetchMenus, fetchRoleMenus } from '@/api/menu'
+import waves from '@/directive/waves' // waves directive
+import { parseTime } from '@/utils'
+import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
-  export default {
-    name: 'ComplexTable',
-    components: {Pagination},
-    directives: {waves},
-    data() {
-      return {
-        test: '<svg-icon icon-class="404" />',
+export default {
+  name: 'ComplexTable',
+  components: { Pagination },
+  directives: { waves },
+  data() {
+    return {
+      test: '<svg-icon icon-class="404" />',
 
-        tableKey: 0,
-        list: null,
-        total: 0,
-        listLoading: true,
-        listQuery: {
-          page: 1,
-          limit: 20,
-          blurry: undefined,
-          isRoot: true
-        },
-        roleListQuery: {
-          blurry: undefined,
-          page: 1,
-          limit: 1024
-        },
-        importanceOptions: [1, 2, 3],
-        sortOptions: [{label: 'ID Ascending', key: '+id'}, {label: 'ID Descending', key: '-id'}],
-        statusOptions: ['published', 'draft', 'deleted'],
-        showReviewer: false,
-        temp: {
-          title: undefined,
-          type: undefined,
-          component: undefined,
-          permission: ''
+      tableKey: 0,
+      list: null,
+      total: 0,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 20,
+        blurry: undefined,
+        isRoot: true
+      },
+      roleListQuery: {
+        blurry: undefined,
+        page: 1,
+        limit: 1024
+      },
+      importanceOptions: [1, 2, 3],
+      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
+      statusOptions: ['published', 'draft', 'deleted'],
+      showReviewer: false,
+      temp: {
+        title: undefined,
+        type: undefined,
+        component: undefined,
+        permission: ''
 
-        },
-        dialogFormVisible: false,
-        dialogStatus: '',
-        textMap: {
-          update: '修改',
-          create: '新建'
-        },
-        dialogPvVisible: false,
-        pvData: [],
-        rules: {
-          username: [{required: true, message: 'type is required', trigger: 'blue'}]
-        },
-        downloadLoading: false,
-        roles: [],
-        role: '',
-        queryType: 0,
-        menuRoot: []
+      },
+      dialogFormVisible: false,
+      dialogStatus: '',
+      textMap: {
+        update: '修改',
+        create: '新建'
+      },
+      dialogPvVisible: false,
+      pvData: [],
+      rules: {
+        username: [{ required: true, message: 'type is required', trigger: 'blue' }]
+      },
+      downloadLoading: false,
+      roles: [],
+      role: '',
+      queryType: 0,
+      menuRoot: []
+    }
+  },
+  created() {
+    this.getMenu()
+  },
+  methods: {
+    getMenu() {
+      this.listLoading = true
+      const data = {
+        ...this.listQuery,
+        page: this.listQuery.page > 0 ? this.listQuery.page - 1 : 0
       }
+      build(data).then(response => {
+        this.list = response
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
     },
-    created() {
+    getRoles() {
+      this.listLoading = true
+      const data = {
+        ...this.roleListQuery,
+        page: this.roleListQuery.page > 0 ? this.roleListQuery.page - 1 : 0
+      }
+      fetchRoles(data).then(response => {
+        console.log('fetchRoles>>>>>>>>>', fetchRoles)
+        this.roles = response.contents
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    handleFilter() {
+      this.listQuery.page = 1
       this.getMenu()
     },
-    methods: {
-      getMenu() {
-        this.listLoading = true
-        const data = {
-          ...this.listQuery,
-          page: this.listQuery.page > 0 ? this.listQuery.page - 1 : 0
-        }
-        build(data).then(response => {
-          this.list = response
-          // Just to simulate the time of the request
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      },
-      getRoles() {
-        this.listLoading = true
-        const data = {
-          ...this.roleListQuery,
-          page: this.roleListQuery.page > 0 ? this.roleListQuery.page - 1 : 0
-        }
-        fetchRoles(data).then(response => {
-          console.log('fetchRoles>>>>>>>>>', fetchRoles)
-          this.roles = response.contents
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      },
-      handleFilter() {
-        this.listQuery.page = 1
-        this.getMenu()
-      },
-      handleModifyStatus(row, status) {
-        this.$message({
-          message: '操作Success',
-          type: 'success'
-        })
-        row.status = status
-      },
-      sortChange(data) {
-        const {prop, order} = data
-        if (prop === 'id') {
-          this.sortByID(order)
-        }
-      },
-      sortByID(order) {
-        if (order === 'ascending') {
-          this.listQuery.sort = '+id'
-        } else {
-          this.listQuery.sort = '-id'
-        }
-        this.handleFilter()
-      },
-      resetTemp() {
-        this.temp = {
-          username: undefined,
-          nickname: undefined,
-          description: undefined
-        }
-      },
-      handleCreate() {
-        this.resetTemp()
-        this.dialogStatus = 'create'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      },
-      createData() {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            createMenu(this.temp).then(() => {
-              this.list.unshift(this.temp)
-              this.dialogFormVisible = false
-              this.$notify({
-                title: 'Success',
-                message: 'Created Successfully',
-                type: 'success',
-                duration: 2000
-              })
-            })
-          }
-        })
-      },
-      handleUpdate(row) {
-        this.temp = Object.assign({}, row) // copy obj
-        this.temp.timestamp = new Date(this.temp.timestamp)
-        this.dialogStatus = 'update'
-        this.dialogFormVisible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].clearValidate()
-        })
-      },
-      updateData() {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            const tempData = Object.assign({}, this.temp)
-            tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-            updateArticle(tempData).then(() => {
-              const index = this.list.findIndex(v => v.id === this.temp.id)
-              this.list.splice(index, 1, this.temp)
-              this.dialogFormVisible = false
-              this.$notify({
-                title: 'Success',
-                message: 'Update Successfully',
-                type: 'success',
-                duration: 2000
-              })
-            })
-          }
-        })
-      },
-      load(tree, treeNode, resolve) {
-        child({pid: tree.id}).then(response => {
-          console.log('xxxxxxxxxxxxxxxxxxxx', response[0])
-          resolve(response)
-
-        })
-      },
-      handleDelete(row, index) {
-        console.log(row)
-
-        // deleteUser([row.id]).then(() => {
-        //   this.$notify({
-        //     title: 'Success',
-        //     message: 'Delete Successfully',
-        //     type: 'success',
-        //     duration: 2000
-        //   })
-        //   this.list.splice(index, 1)
-        // })
-      },
-      handleFetchPv(pv) {
-        fetchPv(pv).then(response => {
-          this.pvData = response.data.pvData
-          this.dialogPvVisible = true
-        })
-      },
-      handleClearFilter() {
-        this.listQuery = {
-          ...this.listQuery,
-          name: ''
-        }
-      },
-      handleDownload() {
-        this.downloadLoading = true
-        import('@/vendor/Export2Excel').then(excel => {
-          const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-          const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
-          const data = this.formatJson(filterVal)
-          excel.export_json_to_excel({
-            header: tHeader,
-            data,
-            filename: 'table-list'
-          })
-          this.downloadLoading = false
-        })
-      },
-      formatJson(filterVal) {
-        return this.list.map(v => filterVal.map(j => {
-          if (j === 'timestamp') {
-            return parseTime(v[j])
-          } else {
-            return v[j]
-          }
-        }))
-      },
-      handleRoleChange: function (roleid) {
-        this.queryType = 1
-        this.listLoading = true
-        const data = {
-          limit: this.listQuery.limit,
-          page: 0,
-          roleId: roleid
-        }
-        fetchRoleMenus(data).then(response => {
-          this.list = response.contents
-          this.total = response.total
-          setTimeout(() => {
-            this.listLoading = false
-          }, 1.5 * 1000)
-        })
-      },
-      getSortClass: function (key) {
-        const sort = this.listQuery.sort
-        return sort === `+${key}` ? 'ascending' : 'descending'
-      },
-      handleMenuTypeChange: function (type) {
-        if (type === 0) {
-          fetchMenus({type: type}).then(response => {
-            response.contents.forEach(menu => {
-              this.menuRoot.push((menu.id, menu.title))
+    handleModifyStatus(row, status) {
+      this.$message({
+        message: '操作Success',
+        type: 'success'
+      })
+      row.status = status
+    },
+    sortChange(data) {
+      const { prop, order } = data
+      if (prop === 'id') {
+        this.sortByID(order)
+      }
+    },
+    sortByID(order) {
+      if (order === 'ascending') {
+        this.listQuery.sort = '+id'
+      } else {
+        this.listQuery.sort = '-id'
+      }
+      this.handleFilter()
+    },
+    resetTemp() {
+      this.temp = {
+        username: undefined,
+        nickname: undefined,
+        description: undefined
+      }
+    },
+    handleCreate() {
+      this.resetTemp()
+      this.dialogStatus = 'create'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    createData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          createMenu(this.temp).then(() => {
+            this.list.unshift(this.temp)
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Created Successfully',
+              type: 'success',
+              duration: 2000
             })
           })
+        }
+      })
+    },
+    handleUpdate(row) {
+      this.temp = Object.assign({}, row) // copy obj
+      this.temp.timestamp = new Date(this.temp.timestamp)
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
+    },
+    updateData() {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          const tempData = Object.assign({}, this.temp)
+          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          updateArticle(tempData).then(() => {
+            const index = this.list.findIndex(v => v.id === this.temp.id)
+            this.list.splice(index, 1, this.temp)
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    load(tree, treeNode, resolve) {
+      child({ pid: tree.id }).then(response => {
+        console.log('xxxxxxxxxxxxxxxxxxxx', response[0])
+        resolve(response)
+      })
+    },
+    handleDelete(row, index) {
+      console.log(row)
+
+      // deleteUser([row.id]).then(() => {
+      //   this.$notify({
+      //     title: 'Success',
+      //     message: 'Delete Successfully',
+      //     type: 'success',
+      //     duration: 2000
+      //   })
+      //   this.list.splice(index, 1)
+      // })
+    },
+    handleFetchPv(pv) {
+      fetchPv(pv).then(response => {
+        this.pvData = response.data.pvData
+        this.dialogPvVisible = true
+      })
+    },
+    handleClearFilter() {
+      this.listQuery = {
+        ...this.listQuery,
+        name: ''
+      }
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
+        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const data = this.formatJson(filterVal)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: 'table-list'
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal) {
+      return this.list.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
         } else {
-          this.menuRoot = []
+          return v[j]
         }
-      },
-      getMenuType: function (type) {
-        switch (type) {
-          case 0:
-            return '目录'
-          case 1:
-            return '菜单'
-          case 2:
-            return '按钮'
-          default:
-            return ''
-        }
+      }))
+    },
+    handleRoleChange: function(roleid) {
+      this.queryType = 1
+      this.listLoading = true
+      const data = {
+        limit: this.listQuery.limit,
+        page: 0,
+        roleId: roleid
+      }
+      fetchRoleMenus(data).then(response => {
+        this.list = response.contents
+        this.total = response.total
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    getSortClass: function(key) {
+      const sort = this.listQuery.sort
+      return sort === `+${key}` ? 'ascending' : 'descending'
+    },
+    handleMenuTypeChange: function(type) {
+      if (type === 0) {
+        fetchMenus({ type: type }).then(response => {
+          response.contents.forEach(menu => {
+            this.menuRoot.push((menu.id, menu.title))
+          })
+        })
+      } else {
+        this.menuRoot = []
+      }
+    },
+    getMenuType: function(type) {
+      switch (type) {
+        case 0:
+          return '目录'
+        case 1:
+          return '菜单'
+        case 2:
+          return '按钮'
+        default:
+          return ''
       }
     }
   }
+}
 </script>

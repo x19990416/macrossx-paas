@@ -78,7 +78,7 @@ public class GeneratorController {
   @Operation(method = "新增模块")
   @PostMapping("/module/create")
   public ResponseEntity<Object> createSysModule(@Validated @RequestBody SysModuleVo sysModuleVo) {
-    log.info("{}",sysModuleVo);
+    log.info("{}", sysModuleVo);
     generateService.createSysModule(toDto(sysModuleVo));
     return new ResponseEntity<>(HttpStatus.CREATED);
   }
@@ -93,6 +93,13 @@ public class GeneratorController {
 
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
+  @Operation(method = "获取所有数据库表")
+  @GetMapping("/tables")
+  public ResponseEntity<Object> tables() {
+    return ResponseEntity.ok(generateService.buildTableTrees());
+  }
+
   private static GenConfigDto toDto(SysConfigVo sysConfigVo) {
     GenConfigDto dto = new GenConfigDto();
     BeanUtils.copyProperties(sysConfigVo, dto);
@@ -102,6 +109,7 @@ public class GeneratorController {
   private static GenModuleDto toDto(SysModuleVo sysModuleVo) {
     GenModuleDto dto = new GenModuleDto();
     BeanUtils.copyProperties(sysModuleVo, dto);
+    log.info(">>>{}<<<",dto);
     return dto;
   }
 }

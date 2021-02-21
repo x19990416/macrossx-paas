@@ -13,16 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.tools.extra.template.engine;
+package com.github.x19990416.tools.constant;
 
-import com.github.x19990416.tools.extra.template.TemplateEngine;
+import java.io.IOException;
 
-import java.lang.reflect.InvocationTargetException;
-
-public class TemplateFactory {
-  public static TemplateEngine getTemplateEngine(Class<? extends TemplateEngine> engineType)
-      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
-          InstantiationException {
-    return engineType.getDeclaredConstructor().newInstance();
-  }
+public interface TemplateEngine {
+	TemplateEngine init(TemplateConfig config);
+	Template getInstance(String templageName) throws IOException;
 }

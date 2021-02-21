@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.tools.extra.template.engine.freemarker;
+package com.github.x19990416.tools.constant.engine.freemarker;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -24,7 +24,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
 
-public class FreemarkerTemplate implements com.github.x19990416.tools.extra.template.Template {
+public class FreemarkerTemplate implements com.github.x19990416.tools.constant.Template {
   private Template freemarkerTemplate;
 
   public FreemarkerTemplate(Template freemarkerTemplate) {

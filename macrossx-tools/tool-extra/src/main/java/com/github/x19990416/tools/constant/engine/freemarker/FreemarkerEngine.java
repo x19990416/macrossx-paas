@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.tools.extra.template.engine.freemarker;
+package com.github.x19990416.tools.constant.engine.freemarker;
 
-import com.github.x19990416.tools.extra.template.Template;
-import com.github.x19990416.tools.extra.template.TemplateConfig;
-import com.github.x19990416.tools.extra.template.TemplateEngine;
+import com.github.x19990416.tools.constant.Template;
+import com.github.x19990416.tools.constant.TemplateConfig;
+import com.github.x19990416.tools.constant.TemplateEngine;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;

@@ -46,3 +46,9 @@ export function updateModule(data) {
     data
   })
 }
+export function fetchTables(data) {
+  return request({
+    url: '/api/system/tables',
+    method: 'get'
+  })
+}

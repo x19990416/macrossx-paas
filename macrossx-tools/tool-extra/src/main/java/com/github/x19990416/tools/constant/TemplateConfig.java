@@ -13,11 +13,27 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.tools.extra.template;
+package com.github.x19990416.tools.constant;
 
-import java.io.IOException;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-public interface TemplateEngine {
-	TemplateEngine init(TemplateConfig config);
-	Template getInstance(String templageName) throws IOException;
+import java.nio.charset.Charset;
+
+@Data
+@RequiredArgsConstructor
+public class TemplateConfig {
+  private final String path;
+  private final Charset charset;
+  private final ResourceMode resourceMode;
+  private Class<? extends TemplateEngine> engine;
+
+
+  public static enum ResourceMode {
+    CLASSPATH,
+    FILE,
+    WEB_ROOT,
+    STRING,
+    COMPOSITE
+  }
 }

@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 public class GenConfigQueryCriteria {
-	@Query
+	@Query(type = Query.Type.EQUAL)
 	private Long id;
 
 	@Query(blurry = "name")

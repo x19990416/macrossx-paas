@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -17,4 +19,5 @@ public class SysModuleVo {
   @NotEmpty private String version;
   private String description;
   @NotEmpty private String artifactId;
+  private Set<String> tables;
 }
