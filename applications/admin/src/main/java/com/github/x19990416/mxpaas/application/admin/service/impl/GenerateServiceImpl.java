@@ -135,34 +135,14 @@ public class GenerateServiceImpl implements GenerateService {
                     new EntityNotFoundException(
                         resourceDto.getClass(), "id", String.valueOf(resourceDto.getId())));
     BeanUtils.copyProperties(resourceDto, sysGenModule, "id", "name");
-    Set<SysModuleTable> toAddTables =
+    List<SysModuleTable> toAddTables =
         resourceDto.getTables().stream()
-            .filter(
-                name -> {
-                  for (SysModuleTable table : sysGenModule.getTables()) {
-                    if (table.getTableName().equalsIgnoreCase(name)) {
-                      return false;
-                    }
-                  }
-                  return true;
-                })
+
             .map(name -> new SysModuleTable().setTableName(name).setModuleId(sysGenModule.getId()))
-            .collect(Collectors.toSet());
-    Set<SysModuleTable> toDelete =
-        sysGenModule.getTables().stream()
-            .filter(table -> !resourceDto.getTables().contains(table.getTableName()))
-            .collect(Collectors.toSet());
-    if (!toAddTables.isEmpty()) {
-      sysGenModule.getTables().addAll(toAddTables);
-    }
-    log.info("todelete ______>{}",toDelete);
+            .collect(Collectors.toList());
+    sysGenModule.setTables(toAddTables);
+    log.info("{}",sysGenModule);
     genModuleRepository.save(sysGenModule);
-    if (!toDelete.isEmpty()) {
-      log.info("execute delete{}",toDelete);
-      System.out.println(sysModuleTableRepository.findById(7l));
-      sysModuleTableRepository.deleteById(7l);
-      //sysModuleTableRepository.deleteAllByIdIn(toDelete.stream().map(SysModuleTable::getId).collect(Collectors.toSet()));
-    }
   }
 
   @Override

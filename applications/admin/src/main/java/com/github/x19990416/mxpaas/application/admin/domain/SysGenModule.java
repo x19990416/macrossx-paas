@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -35,6 +36,6 @@ public class SysGenModule implements Serializable {
       inverseJoinColumns = {@JoinColumn(name = "sys_id", referencedColumnName = "id")})
   private SysGenConfig sysGenConfig;
 
-  @OneToMany(cascade = CascadeType.ALL,mappedBy="sysGenModule",fetch = FetchType.EAGER,orphanRemoval = true)
-  private Set<SysModuleTable> tables = new HashSet<>();
+  @OneToMany(mappedBy = "sysGenModule",cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+  private List<SysModuleTable> tables;
 }

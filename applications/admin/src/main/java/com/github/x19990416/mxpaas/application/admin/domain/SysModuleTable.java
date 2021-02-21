@@ -23,7 +23,7 @@ public class SysModuleTable implements Serializable {
   @Column(name = "table_name")
   private String tableName;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "module_id",insertable = false, updatable = false)
+  @JoinColumn(name = "id",insertable = false,updatable = false)
+  @ManyToOne(fetch=FetchType.LAZY)
   private SysGenModule sysGenModule;
 }

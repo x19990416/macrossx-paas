@@ -13,13 +13,13 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface GenModuleMapper extends BaseMapper<GenModuleDto, SysGenModule> {
-	default Set<String> toTableName(Set<SysModuleTable> tables) {
+	default Set<String> toTableName(List<SysModuleTable> tables) {
 		return tables.stream().map(SysModuleTable::getTableName).collect(Collectors.toSet());
 	}
 
-	default Set<SysModuleTable> toModuleTable(Set<String> tableNames) {
+	default List<SysModuleTable> toModuleTable(Set<String> tableNames) {
 		return tableNames.stream()
 				.map(name -> new SysModuleTable().setTableName(name))
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 	}
 }
