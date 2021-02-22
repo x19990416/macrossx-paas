@@ -3,10 +3,14 @@ package com.github.x19990416.mxpaas.common.exception;
 
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
+
 public class EntityNotFoundException extends RuntimeException {
 
-  public EntityNotFoundException(Class clazz, String field, String val) {
-    super(EntityNotFoundException.generateMessage(clazz.getSimpleName(), field, val));
+  public EntityNotFoundException(Class<?> clazz, String field, Object val) {
+    super(
+        EntityNotFoundException.generateMessage(
+            clazz.getSimpleName(), field, Objects.isNull(val) ? "null" : val.toString()));
   }
 
   private static String generateMessage(String entity, String field, String val) {

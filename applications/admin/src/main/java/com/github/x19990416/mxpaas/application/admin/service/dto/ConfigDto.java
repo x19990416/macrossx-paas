@@ -12,12 +12,12 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class GenModuleDto extends BaseDto {
+public class ConfigDto extends BaseDto {
   private Long Id;
   private String name;
-  private String version;
-  private String groupId;
   private String description;
-  private String artifactId;
-  private Set<String> tables;
+  private String abbr;
+  private String dataSource;
+  private Integer type;
+  private List<ModuleDto> modules;
 }

@@ -15,7 +15,7 @@
  */
 package com.github.x19990416.mxpaas.application.admin.service.impl;
 
-import com.github.x19990416.mxpaas.application.admin.domain.SysGenConfig;
+import com.github.x19990416.mxpaas.application.admin.domain.Config;
 import com.github.x19990416.mxpaas.application.admin.domain.User;
 import com.github.x19990416.mxpaas.application.admin.repository.UserRepository;
 import com.github.x19990416.mxpaas.application.admin.service.UserService;
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
   public void createUser(UserDto resourceDto) {
     log.info("{}", resourceDto);
     if (!Objects.isNull(userRepository.findByUsername(resourceDto.getUsername()))) {
-      throw new EntityExistException(SysGenConfig.class, "username", resourceDto.getUsername());
+      throw new EntityExistException(Config.class, "username", resourceDto.getUsername());
     }
     userRepository.save(userMapper.toEntity(resourceDto));
   }

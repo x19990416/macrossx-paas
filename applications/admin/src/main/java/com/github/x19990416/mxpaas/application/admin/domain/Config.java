@@ -12,10 +12,10 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "sys_gen_config")
+@Table(name = "gen_config")
 @EqualsAndHashCode(callSuper = false)
 @DynamicUpdate()
-public class SysGenConfig {
+public class Config {
   @Id
   @Column(name = "id")
   @Schema(name = "ID", hidden = true)
@@ -30,8 +30,8 @@ public class SysGenConfig {
 
   @OneToMany
   @JoinTable(
-      name = "sys_gen_config_module",
-      joinColumns = {@JoinColumn(name = "sys_id", referencedColumnName = "id")},
-      inverseJoinColumns = {@JoinColumn(name = "sys_module_id", referencedColumnName = "id")})
-  private List<SysGenModule> modules = Lists.newArrayList();
+      name = "gen_config_module",
+      joinColumns = {@JoinColumn(name = "config_id", referencedColumnName = "id")},
+      inverseJoinColumns = {@JoinColumn(name = "module_id", referencedColumnName = "id")})
+  private List<Module> modules;
 }

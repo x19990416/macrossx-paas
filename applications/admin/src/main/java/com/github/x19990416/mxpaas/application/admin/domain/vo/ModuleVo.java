@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Accessors(chain = true)
-public class SysModuleVo {
+public class ModuleVo {
   private Long id;
   @NotEmpty private String name;
   @NotEmpty private String groupId;

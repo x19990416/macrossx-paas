@@ -12,7 +12,7 @@ import java.util.Set;
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Accessors(chain = true)
-public class SysConfigVo {
+public class ConfigVo {
   private Long id;
 
   @NotEmpty(message = "系统名不能为空")
@@ -24,7 +24,7 @@ public class SysConfigVo {
   @Pattern(regexp = "[A-z]+-?[A-z]+", message = "必须为英文字母")
   private String abbr;
 
-  private Set<String> modules;
+  private Set<Long> modules;
 
   private Integer type;
   private String dataSource;

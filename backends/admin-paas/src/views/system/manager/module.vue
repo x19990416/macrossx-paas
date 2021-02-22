@@ -62,7 +62,7 @@
               <span>{{ row.name }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="组织名" width="" align="center">
+          <el-table-column label="组织名" width="" align="center" show-overflow-tooltip>
             <template slot-scope="{row}">
               <span>{{ row.groupId }}</span>
             </template>
@@ -82,7 +82,7 @@
               <span>Maven-snap</span>
             </template>
           </el-table-column>
-          <el-table-column label="说明" align="center">
+          <el-table-column label="说明" align="center" show-overflow-tooltip>
             <template slot-scope="{row}">
               <span>{{ row.description?row.description:'-' }}</span>
             </template>
@@ -121,7 +121,6 @@
             :props="tablesTreeProps"
             show-checkbox
             node-key="name"
-            :default-checked-keys="selectedTables"
           />
         </el-card>
       </el-col>
@@ -201,7 +200,6 @@ export default {
   data() {
     return {
       tempRadio: null,
-      selectedTables: null,
       sys_type_options: [{ value: 1, label: '后端' }, { value: 2, label: '前端' }],
       selectedSystem: [],
       tables: null,
@@ -257,6 +255,7 @@ export default {
       })
     },
     getModule() {
+      this.tables = null;
       this.listLoading = true
       const data = {
         ...this.listQuery,
@@ -367,7 +366,9 @@ export default {
       this.selectedRow = row
       fetchModule({ id: row.id }).then(response => {
         if (response.contents && response.contents.length === 1) {
-          this.selectedTables = response.contents[0].tables
+          let tables = response.contents[0].tables
+          this.$refs.table.setCheckedKeys(tables?tables.split(','):[])
+
         }
       })
     }

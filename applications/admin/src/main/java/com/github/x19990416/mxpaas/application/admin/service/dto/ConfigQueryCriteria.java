@@ -7,7 +7,7 @@ import com.github.x19990416.mxpaas.module.jpa.annotation.Query;
 import lombok.Data;
 
 @Data
-public class GenConfigQueryCriteria {
+public class ConfigQueryCriteria {
 	@Query(type = Query.Type.EQUAL)
 	private Long id;
 

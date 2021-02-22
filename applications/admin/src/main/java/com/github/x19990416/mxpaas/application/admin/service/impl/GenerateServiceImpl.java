@@ -15,12 +15,10 @@
  */
 package com.github.x19990416.mxpaas.application.admin.service.impl;
 
-import com.github.x19990416.mxpaas.application.admin.domain.SysGenConfig;
-import com.github.x19990416.mxpaas.application.admin.domain.SysGenModule;
-import com.github.x19990416.mxpaas.application.admin.domain.SysModuleTable;
+import com.github.x19990416.mxpaas.application.admin.domain.Config;
+import com.github.x19990416.mxpaas.application.admin.domain.Module;
 import com.github.x19990416.mxpaas.application.admin.repository.SysGenConfigRepository;
 import com.github.x19990416.mxpaas.application.admin.repository.SysGenModuleRepository;
-import com.github.x19990416.mxpaas.application.admin.repository.SysModuleTableRepository;
 import com.github.x19990416.mxpaas.application.admin.service.GenerateService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.*;
 import com.github.x19990416.mxpaas.application.admin.utils.ConvterUtil;
@@ -44,53 +42,51 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class GenerateServiceImpl implements GenerateService {
   private final SysGenConfigRepository genConfigRepository;
-  private final GenConfigMapper genConfigMapper;
+  private final ConfigMapper configMapper;
   private final SysGenModuleRepository genModuleRepository;
-  private final GenModuleMapper genModuleMapper;
-  private final SysModuleTableRepository sysModuleTableRepository;
+  private final ModuleMapper genModuleMapper;
   @PersistenceContext private EntityManager em;
 
-  public PageVo<GenConfigDto> querySysConfig(GenConfigQueryCriteria criteria, Pageable pageable) {
-    Page<SysGenConfig> page =
+  public PageVo<ConfigDto> querySysConfig(ConfigQueryCriteria criteria, Pageable pageable) {
+    Page<Config> page =
         genConfigRepository.findAll(
             (root, criteriaQuery, criteriaBuilder) ->
                 QueryHelper.getPredicate(root, criteria, criteriaBuilder),
             pageable);
-    return new PageVo<GenConfigDto>()
-        .setContents(page.map(genConfigMapper::toDto).getContent())
+    return new PageVo<ConfigDto>()
+        .setContents(page.map(configMapper::toDto).getContent())
         .setTotal(page.getTotalElements())
         .setPage(pageable.getPageNumber())
         .setSize(pageable.getPageSize());
   }
 
   @Transactional
-  public void createSysConfig(GenConfigDto resourceDto) {
+  public void createSysConfig(ConfigDto resourceDto) {
     if (!genConfigRepository
         .findByNameOrAbbr(resourceDto.getName(), resourceDto.getAbbr())
         .isEmpty()) {
-      throw new EntityExistException(SysGenConfig.class, "name", resourceDto.getName());
+      throw new EntityExistException(Config.class, "name", resourceDto.getName());
     }
-    genConfigRepository.save(genConfigMapper.toEntity(resourceDto));
+    genConfigRepository.save(configMapper.toEntity(resourceDto));
   }
 
   @Override
   @Transactional
-  public void updateSysConfig(GenConfigDto resourceDto) {
-    SysGenConfig sysGenConfig =
+  public void updateSysConfig(ConfigDto resourceDto) {
+    Config sysGenConfig =
         genConfigRepository
             .findById(resourceDto.getId())
             .orElseThrow(
                 () ->
                     new EntityNotFoundException(
                         resourceDto.getClass(), "id", String.valueOf(resourceDto.getId())));
-    BeanUtils.copyProperties(resourceDto, sysGenConfig, "id", "abbr");
+    BeanUtils.copyProperties(configMapper.toEntity(resourceDto), sysGenConfig, "id", "abbr");
     genConfigRepository.save(sysGenConfig);
   }
 
@@ -101,8 +97,8 @@ public class GenerateServiceImpl implements GenerateService {
   }
 
   @Override
-  public PageVo<GenModuleDto> querySysModule(GenModuleQueryCriteria criteria, Pageable pageable) {
-    Page<SysGenModule> page =
+  public PageVo<ModuleDto> querySysModule(ModuleQueryCriteria criteria, Pageable pageable) {
+    Page<Module> page =
         genModuleRepository.findAll(
             (root, criteriaQuery, criteriaBuilder) ->
                 QueryHelper.getPredicate(root, criteria, criteriaBuilder),
@@ -112,37 +108,19 @@ public class GenerateServiceImpl implements GenerateService {
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void createSysModule(GenModuleDto resourceDto) {
+  public void createSysModule(ModuleDto resourceDto) {
     if (!genModuleRepository.findByName(resourceDto.getName()).isEmpty()) {
-      throw new EntityExistException(SysGenModule.class, "name", resourceDto.getName());
+      throw new EntityExistException(Module.class, "name", resourceDto.getName());
     }
     genModuleRepository.save(genModuleMapper.toEntity(resourceDto));
   }
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public void updateSysModule(GenModuleDto resourceDto) {
-    log.info("{}", resourceDto);
-    SysGenModule sysGenModule =
-        genModuleRepository
-            .findByIdAndNameAndGroupIdAndArtifactId(
-                resourceDto.getId(),
-                resourceDto.getName(),
-                resourceDto.getGroupId(),
-                resourceDto.getArtifactId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        resourceDto.getClass(), "id", String.valueOf(resourceDto.getId())));
-    BeanUtils.copyProperties(resourceDto, sysGenModule, "id", "name");
-    List<SysModuleTable> toAddTables =
-        resourceDto.getTables().stream()
-
-            .map(name -> new SysModuleTable().setTableName(name).setModuleId(sysGenModule.getId()))
-            .collect(Collectors.toList());
-    sysGenModule.setTables(toAddTables);
-    log.info("{}",sysGenModule);
-    genModuleRepository.save(sysGenModule);
+  public void updateSysModule(ModuleDto resourceDto) {
+    Module module = genModuleRepository.findById(resourceDto.getId()).orElseThrow(()->new EntityNotFoundException(Module.class,"id",""));
+    BeanUtils.copyProperties(resourceDto,module,"id","name","artifactId","groupId");
+    genModuleRepository.save(module);
   }
 
   @Override
@@ -152,7 +130,7 @@ public class GenerateServiceImpl implements GenerateService {
 
   public List<TableDto> buildTableTrees() {
     Map<String, TableDto> tables = Maps.newConcurrentMap();
-    List<Object> results = em.createNativeQuery("show tables").getResultList();
+    List<?> results = em.createNativeQuery("show tables").getResultList();
     for (Object o : results) {
       String name = String.valueOf(o);
       String prefix = name.split("_")[0];
@@ -164,7 +142,7 @@ public class GenerateServiceImpl implements GenerateService {
             prefix,
             new TableDto()
                 .setName(prefix)
-                .setChildren(new ArrayList<TableDto>(List.of(new TableDto().setName(name)))));
+                .setChildren(new ArrayList<>(List.of(new TableDto().setName(name)))));
       }
     }
     return Lists.newArrayList(tables.values());

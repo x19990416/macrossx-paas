@@ -28,7 +28,7 @@ allprojects {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 
-    group = 'com.github.x19990416'
+    group = 'com.github.x19990416.paas'
     sourceCompatibility = 1.11
     targetCompatibility = 1.11
     version = '1.0-SNAPSHOT'

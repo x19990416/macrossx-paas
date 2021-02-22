@@ -15,13 +15,13 @@
  */
 package com.github.x19990416.mxpaas.application.admin.controller;
 
-import com.github.x19990416.mxpaas.application.admin.domain.vo.SysConfigVo;
-import com.github.x19990416.mxpaas.application.admin.domain.vo.SysModuleVo;
+import com.github.x19990416.mxpaas.application.admin.domain.vo.ConfigVo;
+import com.github.x19990416.mxpaas.application.admin.domain.vo.ModuleVo;
 import com.github.x19990416.mxpaas.application.admin.service.GenerateService;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigDto;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenConfigQueryCriteria;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenModuleDto;
-import com.github.x19990416.mxpaas.application.admin.service.dto.GenModuleQueryCriteria;
+import com.github.x19990416.mxpaas.application.admin.service.dto.ConfigDto;
+import com.github.x19990416.mxpaas.application.admin.service.dto.ConfigQueryCriteria;
+import com.github.x19990416.mxpaas.application.admin.service.dto.ModuleQueryCriteria;
+import com.github.x19990416.mxpaas.application.admin.service.dto.ModuleDto;
 import com.github.x19990416.mxpaas.common.exception.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +35,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Tag(name = "生成：系统管理")
 @RestController
@@ -46,13 +47,13 @@ public class GeneratorController {
 
   @Operation(method = "系统查询")
   @GetMapping("/config/query")
-  public ResponseEntity<Object> sysConfigQuery(GenConfigQueryCriteria criteria, Pageable pageable) {
+  public ResponseEntity<Object> sysConfigQuery(ConfigQueryCriteria criteria, Pageable pageable) {
     return ResponseEntity.ok(generateService.querySysConfig(criteria, pageable));
   }
 
   @Operation(method = "新增系统")
   @PostMapping("/config/create")
-  public ResponseEntity<Object> createSysConfig(@Validated @RequestBody SysConfigVo sysConfigVo) {
+  public ResponseEntity<Object> createSysConfig(@Validated @RequestBody ConfigVo sysConfigVo) {
     generateService.createSysConfig(toDto(sysConfigVo));
 
     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -60,7 +61,7 @@ public class GeneratorController {
 
   @Operation(method = "更新系统设置")
   @PostMapping("/config/update")
-  public ResponseEntity<Object> updateSysConfig(@Validated @RequestBody SysConfigVo sysConfigVo) {
+  public ResponseEntity<Object> updateSysConfig(@Validated @RequestBody ConfigVo sysConfigVo) {
     if (Objects.isNull(sysConfigVo.getId())) {
       throw new EntityNotFoundException(sysConfigVo.getClass(), "id", null);
     }
@@ -71,13 +72,13 @@ public class GeneratorController {
 
   @Operation(method = "模块查询")
   @GetMapping("/module/query")
-  public ResponseEntity<Object> moduleQuery(GenModuleQueryCriteria criteria, Pageable pageable) {
+  public ResponseEntity<Object> moduleQuery(ModuleQueryCriteria criteria, Pageable pageable) {
     return ResponseEntity.ok(generateService.querySysModule(criteria, pageable));
   }
 
   @Operation(method = "新增模块")
   @PostMapping("/module/create")
-  public ResponseEntity<Object> createSysModule(@Validated @RequestBody SysModuleVo sysModuleVo) {
+  public ResponseEntity<Object> createSysModule(@Validated @RequestBody ModuleVo sysModuleVo) {
     log.info("{}", sysModuleVo);
     generateService.createSysModule(toDto(sysModuleVo));
     return new ResponseEntity<>(HttpStatus.CREATED);
@@ -85,7 +86,7 @@ public class GeneratorController {
 
   @Operation(method = "更新模块")
   @PostMapping("/module/update")
-  public ResponseEntity<Object> updateModule(@Validated @RequestBody SysModuleVo sysModuleVo) {
+  public ResponseEntity<Object> updateModule(@Validated @RequestBody ModuleVo sysModuleVo) {
     if (Objects.isNull(sysModuleVo.getId())) {
       throw new EntityNotFoundException(sysModuleVo.getClass(), "id", null);
     }
@@ -100,16 +101,24 @@ public class GeneratorController {
     return ResponseEntity.ok(generateService.buildTableTrees());
   }
 
-  private static GenConfigDto toDto(SysConfigVo sysConfigVo) {
-    GenConfigDto dto = new GenConfigDto();
+  private static ConfigDto toDto(ConfigVo sysConfigVo) {
+    ConfigDto dto = new ConfigDto();
     BeanUtils.copyProperties(sysConfigVo, dto);
+    dto.setModules(sysConfigVo.getModules().stream().map(e->{
+      ModuleDto moduleDto = new ModuleDto();
+      moduleDto.setId(e);
+      return moduleDto;
+    }).collect(Collectors.toList()));
     return dto;
   }
 
-  private static GenModuleDto toDto(SysModuleVo sysModuleVo) {
-    GenModuleDto dto = new GenModuleDto();
+  private static ModuleDto toDto(ModuleVo sysModuleVo) {
+    ModuleDto dto = new ModuleDto();
     BeanUtils.copyProperties(sysModuleVo, dto);
-    log.info(">>>{}<<<",dto);
+    if(!Objects.isNull(sysModuleVo.getTables())){
+      String tables= String.join(",",sysModuleVo.getTables());
+      dto.setTables(tables);
+    }
     return dto;
   }
 }

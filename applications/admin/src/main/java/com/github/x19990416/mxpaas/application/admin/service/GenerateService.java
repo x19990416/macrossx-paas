@@ -10,19 +10,19 @@ import java.util.Set;
 
 public interface GenerateService {
 
-  public PageVo<GenConfigDto> querySysConfig(GenConfigQueryCriteria criteria, Pageable pageable);
+  public PageVo<ConfigDto> querySysConfig(ConfigQueryCriteria criteria, Pageable pageable);
 
-  public void createSysConfig(GenConfigDto resourceDto);
+  public void createSysConfig(ConfigDto resourceDto);
 
-  public void updateSysConfig(GenConfigDto resourceDto);
+  public void updateSysConfig(ConfigDto resourceDto);
 
   public void deleteSysConfig(Set<Long> ids);
 
-  public PageVo<GenModuleDto> querySysModule(GenModuleQueryCriteria criteria, Pageable pageable);
+  public PageVo<ModuleDto> querySysModule(ModuleQueryCriteria criteria, Pageable pageable);
 
-  public void createSysModule(GenModuleDto resourceDto);
+  public void createSysModule(ModuleDto resourceDto);
 
-  public void updateSysModule(GenModuleDto resourceDto);
+  public void updateSysModule(ModuleDto resourceDto);
 
   public void deleteSysModule(Set<Long> ids);
 
