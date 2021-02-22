@@ -13,28 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.common.vo;
+package com.github.x19990416.mxpaas.application.admin.domain.vo;
 
-import com.github.x19990416.mxpaas.common.base.BaseMapper;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import jdk.jfr.DataAmount;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.data.domain.Page;
 
-import java.util.List;
+import javax.validation.constraints.NotEmpty;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Accessors(chain = true)
-public class PageVo<T> {
-  private List<T> contents;
-  private Long total;
-  private int page;
-  private int size;
-
-  public static <D, E> PageVo<D> toPageVo(Page<E> page, BaseMapper<D, E> mapper) {
-    return new PageVo<D>()
-        .setContents(mapper.toDto(page.getContent()))
-        .setTotal(page.getTotalElements())
-        .setPage(page.getNumber())
-        .setSize(page.getSize());
-  }
+public class GenerateVo {
+	@NotEmpty
+	private Long systemId;
 }

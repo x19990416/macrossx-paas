@@ -17,8 +17,9 @@ package com.github.x19990416.mxpaas.application.admin.service.impl;
 
 import com.github.x19990416.mxpaas.application.admin.domain.Config;
 import com.github.x19990416.mxpaas.application.admin.domain.Module;
-import com.github.x19990416.mxpaas.application.admin.repository.SysGenConfigRepository;
-import com.github.x19990416.mxpaas.application.admin.repository.SysGenModuleRepository;
+import com.github.x19990416.mxpaas.application.admin.domain.vo.GenerateVo;
+import com.github.x19990416.mxpaas.application.admin.repository.ConfigRepository;
+import com.github.x19990416.mxpaas.application.admin.repository.ModuleRepository;
 import com.github.x19990416.mxpaas.application.admin.service.GenerateService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.*;
 import com.github.x19990416.mxpaas.application.admin.utils.ConvterUtil;
@@ -26,6 +27,13 @@ import com.github.x19990416.mxpaas.common.exception.EntityExistException;
 import com.github.x19990416.mxpaas.common.exception.EntityNotFoundException;
 import com.github.x19990416.mxpaas.common.vo.PageVo;
 import com.github.x19990416.mxpaas.module.jpa.QueryHelper;
+import com.github.x19990416.tools.constant.Template;
+import com.github.x19990416.tools.constant.TemplateConfig;
+import com.github.x19990416.tools.constant.TemplateEngine;
+import com.github.x19990416.tools.constant.engine.TemplateFactory;
+import com.github.x19990416.tools.constant.engine.freemarker.FreemarkerEngine;
+import com.github.x19990416.tools.constant.engine.freemarker.FreemarkerTemplate;
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +46,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,9 +58,9 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class GenerateServiceImpl implements GenerateService {
-  private final SysGenConfigRepository genConfigRepository;
+  private final ConfigRepository genConfigRepository;
   private final ConfigMapper configMapper;
-  private final SysGenModuleRepository genModuleRepository;
+  private final ModuleRepository genModuleRepository;
   private final ModuleMapper genModuleMapper;
   @PersistenceContext private EntityManager em;
 
@@ -146,5 +157,21 @@ public class GenerateServiceImpl implements GenerateService {
       }
     }
     return Lists.newArrayList(tables.values());
+  }
+
+  public Boolean generate(GenerateVo vo) throws Exception {
+
+    TemplateEngine engine =
+        TemplateFactory.getTemplateEngine(
+            FreemarkerEngine.class,
+            new TemplateConfig("generate", Charsets.UTF_8, TemplateConfig.ResourceMode.CLASSPATH));
+    Template template = engine.getInstance("gradle.ftl");
+    template.render(Maps.newHashMap());
+
+    return true;
+  }
+
+  public static void main(String...s) throws Exception {
+    new GenerateServiceImpl(null,null,null,null).generate(null);
   }
 }

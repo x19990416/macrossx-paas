@@ -16,13 +16,15 @@
 package com.github.x19990416.mxpaas.application.admin.controller;
 
 import com.github.x19990416.mxpaas.application.admin.domain.vo.ConfigVo;
+import com.github.x19990416.mxpaas.application.admin.domain.vo.GenerateVo;
 import com.github.x19990416.mxpaas.application.admin.domain.vo.ModuleVo;
 import com.github.x19990416.mxpaas.application.admin.service.GenerateService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.ConfigDto;
 import com.github.x19990416.mxpaas.application.admin.service.dto.ConfigQueryCriteria;
-import com.github.x19990416.mxpaas.application.admin.service.dto.ModuleQueryCriteria;
 import com.github.x19990416.mxpaas.application.admin.service.dto.ModuleDto;
+import com.github.x19990416.mxpaas.application.admin.service.dto.ModuleQueryCriteria;
 import com.github.x19990416.mxpaas.common.exception.EntityNotFoundException;
+import com.github.x19990416.mxpaas.module.auth.AnonymousAccess;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +51,15 @@ public class GeneratorController {
   @GetMapping("/config/query")
   public ResponseEntity<Object> sysConfigQuery(ConfigQueryCriteria criteria, Pageable pageable) {
     return ResponseEntity.ok(generateService.querySysConfig(criteria, pageable));
+  }
+
+  @AnonymousAccess
+  @Operation(method = "系统生成")
+  @GetMapping("/generate")
+  public ResponseEntity<Object> generate(@Validated @RequestBody GenerateVo generateVo) {
+    log.info("{}", generateVo);
+   // generateService.generate(generateVo);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @Operation(method = "新增系统")
@@ -104,19 +115,23 @@ public class GeneratorController {
   private static ConfigDto toDto(ConfigVo sysConfigVo) {
     ConfigDto dto = new ConfigDto();
     BeanUtils.copyProperties(sysConfigVo, dto);
-    dto.setModules(sysConfigVo.getModules().stream().map(e->{
-      ModuleDto moduleDto = new ModuleDto();
-      moduleDto.setId(e);
-      return moduleDto;
-    }).collect(Collectors.toList()));
+    dto.setModules(
+        sysConfigVo.getModules().stream()
+            .map(
+                e -> {
+                  ModuleDto moduleDto = new ModuleDto();
+                  moduleDto.setId(e);
+                  return moduleDto;
+                })
+            .collect(Collectors.toList()));
     return dto;
   }
 
   private static ModuleDto toDto(ModuleVo sysModuleVo) {
     ModuleDto dto = new ModuleDto();
     BeanUtils.copyProperties(sysModuleVo, dto);
-    if(!Objects.isNull(sysModuleVo.getTables())){
-      String tables= String.join(",",sysModuleVo.getTables());
+    if (!Objects.isNull(sysModuleVo.getTables())) {
+      String tables = String.join(",", sysModuleVo.getTables());
       dto.setTables(tables);
     }
     return dto;

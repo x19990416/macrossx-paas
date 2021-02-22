@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public interface SysGenModuleRepository
+public interface ModuleRepository
     extends JpaRepository<Module, Long>, JpaSpecificationExecutor<Module> {
   public List<Module> findByName(String name);
 

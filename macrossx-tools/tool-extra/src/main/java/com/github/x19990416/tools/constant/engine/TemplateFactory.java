@@ -15,6 +15,7 @@
  */
 package com.github.x19990416.tools.constant.engine;
 
+import com.github.x19990416.tools.constant.TemplateConfig;
 import com.github.x19990416.tools.constant.TemplateEngine;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,5 +25,11 @@ public class TemplateFactory {
       throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
           InstantiationException {
     return engineType.getDeclaredConstructor().newInstance();
+  }
+
+  public static TemplateEngine getTemplateEngine(Class<? extends TemplateEngine> engineType, TemplateConfig config)
+          throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+          InstantiationException {
+    return getTemplateEngine(engineType).init(config);
   }
 }

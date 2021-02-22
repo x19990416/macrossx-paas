@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 import java.util.Set;
 
-public interface SysGenConfigRepository
+public interface ConfigRepository
     extends JpaRepository<Config, Long>, JpaSpecificationExecutor<Config> {
   public List<Config> findByNameOrAbbr(String name, String abbr);
 

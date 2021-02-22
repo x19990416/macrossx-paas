@@ -9,3 +9,4 @@
 
 rootProject.name = 'admin'
 include ':modules:module-auth',':modules:module-common'
+include ':macrossx-tools:tool-extra'

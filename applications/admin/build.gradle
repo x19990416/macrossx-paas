@@ -23,6 +23,8 @@ repositories {
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
     implementation project(':modules:module-auth')
+    implementation project(':macrossx-tools:tool-extra')
+
     // Use JUnit test framework
 }
 
