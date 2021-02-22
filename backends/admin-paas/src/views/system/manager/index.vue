@@ -34,6 +34,9 @@
       <el-button v-waves class="filter-item" type="primary" size="small" icon="el-icon-plus" @click="handleCreate">
         新增
       </el-button>
+      <el-button v-waves class="filter-item" type="info" size="small" icon="el-icon-editor" @click="handleCreate">
+        系统生成
+      </el-button>
     </div>
 
     <el-row :gutter="24">
