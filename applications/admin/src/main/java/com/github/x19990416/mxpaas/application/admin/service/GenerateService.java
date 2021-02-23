@@ -1,35 +1,23 @@
-/** create by Guo Limin on 2021/2/12. */
+/*
+ *  Copyright (c) 2020-2021 Guo Limin
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.github.x19990416.mxpaas.application.admin.service;
-
-import com.github.x19990416.mxpaas.application.admin.domain.vo.GenerateVo;
-import com.github.x19990416.mxpaas.application.admin.service.dto.*;
-import com.github.x19990416.mxpaas.common.vo.PageVo;
-import org.springframework.data.domain.Pageable;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.Set;
 
 public interface GenerateService {
-
-  public PageVo<ConfigDto> querySysConfig(ConfigQueryCriteria criteria, Pageable pageable);
-
-  public void createSysConfig(ConfigDto resourceDto);
-
-  public void updateSysConfig(ConfigDto resourceDto);
-
-  public void deleteSysConfig(Set<Long> ids);
-
-  public PageVo<ModuleDto> querySysModule(ModuleQueryCriteria criteria, Pageable pageable);
-
-  public void createSysModule(ModuleDto resourceDto);
-
-  public void updateSysModule(ModuleDto resourceDto);
-
-  public void deleteSysModule(Set<Long> ids);
-
-  public List<TableDto> buildTableTrees();
-
-  public Boolean generate(GenerateVo vo) throws Exception;
+	public boolean generateSystem(Long sysId) throws Exception;
 }

@@ -36,6 +36,5 @@ public class Module implements Serializable {
   private String groupId;
   private String version;
   private String description;
-  private String artifactId;
   private String tables;
 }

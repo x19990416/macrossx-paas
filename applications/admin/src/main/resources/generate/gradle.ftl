@@ -7,13 +7,9 @@ repositories {
 }
 
 dependencies {
-    <#list dependencies as independency>
-        implements ${independency}
-    </#list>
-
-
-
-// Use JUnit test framework
+<#list dependencies as independency>
+    ${independency}
+</#list>
 }
 
 <#if mainClassName??>

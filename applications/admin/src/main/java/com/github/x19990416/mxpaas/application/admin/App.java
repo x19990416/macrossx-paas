@@ -20,10 +20,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class App {
   public static void main(String[] args) {
     MenuService mservice = SpringApplication.run(App.class, args).getBean(MenuService.class);
-    //System.out.println(mservice.buildTree(mservice.findByUser(1l)).size());
-    System.out.println(mservice.queryMenuChild(1l));
-
-    String s = "118\t1\t0\t1\t模块管理\tSystemModuleConfig\tsystem/manager/module\t999\t\tmodule\t0\t0\t0\t\t\t\t\t";
   }
 
   @Bean

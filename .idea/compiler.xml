@@ -12,6 +12,6 @@
         <module name="macrossx-paas.modules.module-jpa.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="1.10" />
   </component>
 </project>

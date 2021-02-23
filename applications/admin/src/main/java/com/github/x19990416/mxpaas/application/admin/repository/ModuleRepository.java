@@ -14,5 +14,5 @@ public interface ModuleRepository
 
   public void deleteAllByIdIn(Set<Long> ids);
 
-  public Optional<Module> findByIdAndNameAndGroupIdAndArtifactId(Long id,String name,String groupId,String artifactId);
+  public Optional<Module> findByIdAndNameAndGroupId(Long id,String name,String groupId);
 }

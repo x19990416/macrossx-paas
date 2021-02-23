@@ -29,8 +29,8 @@ allprojects {
     }
 
     group = 'com.github.x19990416.paas'
-    sourceCompatibility = 1.11
-    targetCompatibility = 1.11
+    sourceCompatibility = 1.10
+    targetCompatibility = 1.10
     version = '1.0-SNAPSHOT'
     dependencies {
         implementation 'org.projectlombok:lombok:1.18.8'

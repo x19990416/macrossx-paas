@@ -9,10 +9,15 @@
 plugins {
     // Apply the java plugin to add support for Java
     id 'java'
-
     // Apply the application plugin to add support for building an application
     id 'application'
+    id 'java-library'
+    id "org.springframework.boot" version "2.4.3"
+
 }
+
+
+
 
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -22,11 +27,13 @@ repositories {
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
-    implementation project(':modules:module-auth')
-    implementation project(':macrossx-tools:tool-extra')
+    api project(':modules:module-auth')
+    api project(':macrossx-tools:tool-extra')
 
     // Use JUnit test framework
 }
 
 // Define the main class for the application
+
+
 mainClassName = 'com.github.x19990416.mxpaas.application.admin.App'
