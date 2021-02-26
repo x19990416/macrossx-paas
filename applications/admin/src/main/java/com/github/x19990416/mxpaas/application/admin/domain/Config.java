@@ -1,7 +1,6 @@
 /** create by Guo Limin on 2021/2/12. */
 package com.github.x19990416.mxpaas.application.admin.domain;
 
-import com.google.common.collect.Lists;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +26,7 @@ public class Config {
   private String abbr;
   private String dataSource;
   private Integer type;
+  private String basePackage;
 
   @OneToMany
   @JoinTable(

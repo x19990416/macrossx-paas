@@ -16,7 +16,6 @@
 package com.github.x19990416.mxpaas.application.admin.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jdk.jfr.DataAmount;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -26,6 +25,5 @@ import javax.validation.constraints.NotEmpty;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Accessors(chain = true)
 public class GenerateVo {
-	@NotEmpty
-	private Long systemId;
+  @NotEmpty private Long systemId;
 }

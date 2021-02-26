@@ -26,11 +26,12 @@ import com.github.x19990416.tools.constant.TemplateEngine;
 import com.github.x19990416.tools.constant.engine.TemplateFactory;
 import com.github.x19990416.tools.constant.engine.freemarker.FreemarkerEngine;
 import com.google.common.base.Charsets;
-import com.google.common.collect.Maps;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +56,8 @@ public class GenerateServiceImpl implements GenerateService {
             .findById(sysId)
             .orElseThrow(() -> new EntityNotFoundException(Config.class, "id", sysId));
 
-    Map<String, Object> maps = Maps.newHashMap();
-    maps.putAll(generateModule(config.getModules()));
-    System.out.println(getTemplate("gradle.ftl").render(maps));
+    String gradleFile = getTemplate("gradle.ftl").render(generateModule(config.getModules()));
+    new FileOutputStream(new File("")).write(gradleFile.getBytes());
     return true;
   }
 
