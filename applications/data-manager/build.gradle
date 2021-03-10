@@ -30,5 +30,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'com.github.x19990416.paax.application.datamanager.App'
+    mainClassName = 'com.github.x19990416.paas.application.datamanager.App'
 }
