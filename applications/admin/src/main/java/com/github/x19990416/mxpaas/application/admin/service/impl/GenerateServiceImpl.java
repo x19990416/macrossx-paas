@@ -57,7 +57,7 @@ public class GenerateServiceImpl implements GenerateService {
             .orElseThrow(() -> new EntityNotFoundException(Config.class, "id", sysId));
 
     String gradleFile = getTemplate("gradle.ftl").render(generateModule(config.getModules()));
-    new FileOutputStream(new File("")).write(gradleFile.getBytes());
+    System.out.println(gradleFile);
     return true;
   }
 

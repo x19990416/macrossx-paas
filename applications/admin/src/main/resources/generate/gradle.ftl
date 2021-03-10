@@ -3,6 +3,8 @@ plugins {
   id 'application'
 }
 repositories {
+  maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots'}
   jcenter()
 }
 

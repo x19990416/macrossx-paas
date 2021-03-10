@@ -10,7 +10,6 @@ plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
 }
-
 version='1.0-SNAPSHOT'
 
 repositories {

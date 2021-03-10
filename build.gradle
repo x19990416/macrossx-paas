@@ -54,7 +54,7 @@ allprojects {
         repositories {
             mavenDeployer {
                 repository(url: 'https://oss.sonatype.org/content/repositories/snapshots/'){
-                    authentication(userName: '', password: '')}
+                    authentication(userName: 'x19990416', password: 'Forever')}
             }
         }
     }

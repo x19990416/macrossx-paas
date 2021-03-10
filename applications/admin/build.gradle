@@ -16,24 +16,23 @@ plugins {
 
 }
 
-
-
-
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots'}
     jcenter()
 }
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
-    api project(':modules:module-auth')
+    implementation 'com.github.x19990416.paas:module-auth:1.0-SNAPSHOT'
+    implementation 'com.github.x19990416.paas:module-menu:1.0-SNAPSHOT'
+
     api project(':macrossx-tools:tool-extra')
 
     // Use JUnit test framework
 }
 
 // Define the main class for the application
-
-
 mainClassName = 'com.github.x19990416.mxpaas.application.admin.App'

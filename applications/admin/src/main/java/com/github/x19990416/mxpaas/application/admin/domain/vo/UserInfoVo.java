@@ -15,6 +15,7 @@
  */
 package com.github.x19990416.mxpaas.application.admin.domain.vo;
 
+import com.github.x19990416.mxpaas.module.menu.domain.vo.MenuVo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

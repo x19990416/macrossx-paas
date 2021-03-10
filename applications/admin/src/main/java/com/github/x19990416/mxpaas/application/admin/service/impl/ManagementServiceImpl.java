@@ -21,9 +21,9 @@ import com.github.x19990416.mxpaas.application.admin.repository.ConfigRepository
 import com.github.x19990416.mxpaas.application.admin.repository.ModuleRepository;
 import com.github.x19990416.mxpaas.application.admin.service.ManagementService;
 import com.github.x19990416.mxpaas.application.admin.service.dto.*;
-import com.github.x19990416.mxpaas.application.admin.utils.ConvterUtil;
 import com.github.x19990416.mxpaas.common.exception.EntityExistException;
 import com.github.x19990416.mxpaas.common.exception.EntityNotFoundException;
+import com.github.x19990416.mxpaas.common.utils.ConvertUtil;
 import com.github.x19990416.mxpaas.common.vo.PageVo;
 import com.github.x19990416.mxpaas.module.jpa.QueryHelper;
 import com.google.common.collect.Lists;
@@ -103,7 +103,7 @@ public class ManagementServiceImpl implements ManagementService {
             (root, criteriaQuery, criteriaBuilder) ->
                 QueryHelper.getPredicate(root, criteria, criteriaBuilder),
             pageable);
-    return ConvterUtil.toPageVo(page, genModuleMapper);
+    return ConvertUtil.toPageVo(page, genModuleMapper);
   }
 
   @Override

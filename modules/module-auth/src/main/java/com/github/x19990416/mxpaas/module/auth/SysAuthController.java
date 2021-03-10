@@ -4,7 +4,7 @@ package com.github.x19990416.mxpaas.module.auth;
 import com.github.x19990416.mxpaas.common.utils.RedisUtil;
 import com.github.x19990416.mxpaas.module.auth.domain.AuthUser;
 import com.github.x19990416.mxpaas.module.auth.domain.dto.AuthUserDto;
-import com.github.x19990416.mxpaas.module.auth.domain.dto.UserPwdLogin;
+import com.github.x19990416.mxpaas.module.auth.domain.vo.UserPwdLogin;
 import com.github.x19990416.mxpaas.module.auth.service.AuthRoleService;
 import com.github.x19990416.mxpaas.module.auth.shiro.token.SysUserToken;
 import com.github.x19990416.mxpaas.module.auth.util.JwtUtil;

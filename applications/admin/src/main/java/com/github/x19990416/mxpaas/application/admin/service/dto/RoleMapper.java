@@ -15,7 +15,6 @@
  */
 package com.github.x19990416.mxpaas.application.admin.service.dto;
 
-import com.github.x19990416.mxpaas.application.admin.domain.Menu;
 import com.github.x19990416.mxpaas.application.admin.domain.Role;
 import com.github.x19990416.mxpaas.common.base.BaseMapper;
 import org.mapstruct.Mapper;

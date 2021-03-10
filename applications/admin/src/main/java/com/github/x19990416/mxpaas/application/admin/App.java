@@ -3,8 +3,8 @@
  */
 package com.github.x19990416.mxpaas.application.admin;
 
-import com.github.x19990416.mxpaas.application.admin.service.MenuService;
 import com.github.x19990416.mxpaas.common.utils.SpringContextHolder;
+import com.github.x19990416.mxpaas.module.menu.service.MenuService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;

@@ -12,6 +12,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/applications" />
             <option value="$PROJECT_DIR$/applications/admin" />
+            <option value="$PROJECT_DIR$/applications/data-manager" />
             <option value="$PROJECT_DIR$/macrossx-tools" />
             <option value="$PROJECT_DIR$/macrossx-tools/tool-constant" />
             <option value="$PROJECT_DIR$/macrossx-tools/tool-extra" />
@@ -21,9 +22,9 @@
             <option value="$PROJECT_DIR$/modules/module-generator" />
             <option value="$PROJECT_DIR$/modules/module-jdbc" />
             <option value="$PROJECT_DIR$/modules/module-jpa" />
+            <option value="$PROJECT_DIR$/modules/module-menu" />
           </set>
         </option>
-        <option name="useAutoImport" value="true" />
         <option name="useQualifiedModuleNames" value="true" />
       </GradleProjectSettings>
     </option>

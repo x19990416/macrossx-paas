@@ -11,4 +11,5 @@ import java.util.Set;
 
 public interface AuthRoleService {
     public Set<String> getUserRoles(AuthUser authUser);
+    public Set<AuthRole> getUserRoles(Long uid);
 }
