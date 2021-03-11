@@ -13,8 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.application.admin.domain;
+package com.github.x19990416.paas.module.user.domain;
 
+import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
 import com.github.x19990416.mxpaas.module.jpa.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -49,7 +50,7 @@ public class User extends BaseEntity implements Serializable {
       name = "sys_users_roles",
       joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
       inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "role_id")})
-  private Set<Role> roles;
+  private Set<AuthRole> roles;
   /*
   @ManyToMany
   @Schema(name = "用户岗位")

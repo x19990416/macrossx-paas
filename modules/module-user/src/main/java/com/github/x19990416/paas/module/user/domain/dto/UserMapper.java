@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.application.admin.service.dto;
+package com.github.x19990416.paas.module.user.domain.dto;
 
-import com.github.x19990416.mxpaas.application.admin.domain.Role;
-import com.github.x19990416.mxpaas.application.admin.domain.User;
 import com.github.x19990416.mxpaas.common.base.BaseMapper;
+import com.github.x19990416.mxpaas.module.auth.domain.AuthRole;
+import com.github.x19990416.paas.module.user.domain.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -29,17 +29,24 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper extends BaseMapper<UserDto, User> {
   @Mappings({@Mapping(source = "role.name", target = "roles")})
-  default Set<String> toRoleName(Set<Role> roles) {
+  default Set<String> toRoleName(Set<AuthRole> roles) {
     if (roles == null) {
       return null;
     }
-    return roles.stream().map(Role::getLevelName).collect(Collectors.toSet());
+    return roles.stream().map(AuthRole::getLevelName).collect(Collectors.toSet());
   }
 
-  default Set<Role> toRole(Set<String> roleName) {
+  default Set<AuthRole> toRole(Set<String> roleName) {
     if (roleName == null) {
       return null;
     }
-    return roleName.stream().map(name -> new Role().setLevelName(name)).collect(Collectors.toSet());
+    return roleName.stream()
+        .map(
+            name -> {
+              AuthRole role = new AuthRole();
+              role.setLevelName(name);
+              return role;
+            })
+        .collect(Collectors.toSet());
   }
 }

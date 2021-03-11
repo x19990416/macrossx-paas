@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.application.admin.domain.vo;
+package com.github.x19990416.paas.module.user.domain.vo;
 
 import com.github.x19990416.mxpaas.module.menu.domain.vo.MenuVo;
 import lombok.Data;

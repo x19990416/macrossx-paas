@@ -15,9 +15,10 @@
  */
 package com.github.x19990416.paas.module.user.service;
 
-import com.github.x19990416.mxpaas.application.admin.service.dto.UserDto;
-import com.github.x19990416.mxpaas.application.admin.service.dto.UserQueryCriteria;
+
 import com.github.x19990416.mxpaas.common.vo.PageVo;
+import com.github.x19990416.paas.module.user.domain.dto.UserDto;
+import com.github.x19990416.paas.module.user.domain.dto.UserQueryCriteria;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Set;

@@ -11,12 +11,14 @@ import com.github.x19990416.paas.application.datamanager.repository.nf.NFIngredi
 import com.github.x19990416.paas.application.datamanager.repository.nf.NFProductRepository;
 import com.github.x19990416.paas.application.datamanager.service.MilkPowderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MilkPowderServiceImpl implements MilkPowderService {
   private final NFProductRepository nfProductRepository;
   private final NFProductMapper nfProductMapper;

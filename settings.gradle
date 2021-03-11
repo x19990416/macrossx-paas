@@ -13,6 +13,6 @@ include ':macrossx-tools:tool-extra',':macrossx-tools:tool-constant'
 include ':modules:module-generator'
 
 include ':applications:admin',':applications:data-manager'
-include ':modules:module-menu'
+include ':modules:module-menu',':modules:module-user'
 
 

@@ -8,3 +8,4 @@
  */
 
 rootProject.name = 'data-manager'
+include ':modules:module-user'

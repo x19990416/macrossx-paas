@@ -25,6 +25,9 @@ repositories {
 dependencies {
     implementation 'com.github.x19990416.paas:module-auth:1.0-SNAPSHOT'
     implementation 'com.github.x19990416.paas:module-menu:1.0-SNAPSHOT'
+    implementation 'com.github.x19990416.paas:module-user:1.0-SNAPSHOT'
+
+
 
 }
 

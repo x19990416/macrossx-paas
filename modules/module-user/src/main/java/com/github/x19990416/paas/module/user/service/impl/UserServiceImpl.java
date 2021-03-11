@@ -13,18 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.github.x19990416.mxpaas.application.admin.service.impl;
+package com.github.x19990416.paas.module.user.service.impl;
 
-import com.github.x19990416.mxpaas.application.admin.domain.Config;
-import com.github.x19990416.mxpaas.application.admin.domain.User;
-import com.github.x19990416.mxpaas.application.admin.repository.UserRepository;
-import com.github.x19990416.mxpaas.application.admin.service.UserService;
-import com.github.x19990416.mxpaas.application.admin.service.dto.UserDto;
-import com.github.x19990416.mxpaas.application.admin.service.dto.UserMapper;
-import com.github.x19990416.mxpaas.application.admin.service.dto.UserQueryCriteria;
 import com.github.x19990416.mxpaas.common.exception.EntityExistException;
+import com.github.x19990416.mxpaas.common.utils.ConvertUtil;
 import com.github.x19990416.mxpaas.common.vo.PageVo;
 import com.github.x19990416.mxpaas.module.jpa.QueryHelper;
+import com.github.x19990416.paas.module.user.domain.User;
+import com.github.x19990416.paas.module.user.domain.dto.UserDto;
+import com.github.x19990416.paas.module.user.domain.dto.UserMapper;
+import com.github.x19990416.paas.module.user.domain.dto.UserQueryCriteria;
+import com.github.x19990416.paas.module.user.repository.UserRepository;
+import com.github.x19990416.paas.module.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -51,11 +51,7 @@ public class UserServiceImpl implements UserService {
             (root, criteriaQuery, criteriaBuilder) ->
                 QueryHelper.getPredicate(root, criteria, criteriaBuilder),
             pageable);
-    return new PageVo<UserDto>()
-        .setContents(page.map(userMapper::toDto).getContent())
-        .setTotal(page.getTotalElements())
-        .setPage(pageable.getPageNumber())
-        .setSize(pageable.getPageSize());
+    return ConvertUtil.toPageVo(page,userMapper);
   }
 
   @Override
@@ -63,7 +59,7 @@ public class UserServiceImpl implements UserService {
   public void createUser(UserDto resourceDto) {
     log.info("{}", resourceDto);
     if (!Objects.isNull(userRepository.findByUsername(resourceDto.getUsername()))) {
-      throw new EntityExistException(Config.class, "username", resourceDto.getUsername());
+      throw new EntityExistException(UserDto.class, "username", resourceDto.getUsername());
     }
     userRepository.save(userMapper.toEntity(resourceDto));
   }

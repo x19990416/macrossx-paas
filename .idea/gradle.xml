@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/modules/module-jdbc" />
             <option value="$PROJECT_DIR$/modules/module-jpa" />
             <option value="$PROJECT_DIR$/modules/module-menu" />
+            <option value="$PROJECT_DIR$/modules/module-user" />
           </set>
         </option>
         <option name="useQualifiedModuleNames" value="true" />

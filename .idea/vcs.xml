@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/backends/admin-template" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/backends/data-manager" vcs="Git" />
   </component>
 </project>
