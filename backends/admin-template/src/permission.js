@@ -38,14 +38,15 @@ router.beforeEach(async(to, from, next) => {
           // get user info
           // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
           const { roles, menus } = await store.dispatch('user/getInfo')
+
           // generate accessible routes map based on roles
           const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
+
           const menuComponents = filterAsyncRouter(menus).concat(accessRoutes)
           // console.log(menuComponents)
           global.antRouter = menuComponents
-          router.addRoutes(menuComponents) // 2.动态添加路由
-
           // dynamically add accessible routes
+          router.addRoutes(accessRoutes)
 
           // hack method to ensure that addRoutes is complete
           // set the replace: true, so the navigation will not leave a history record
@@ -53,7 +54,7 @@ router.beforeEach(async(to, from, next) => {
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
-          Message.error(error || 'Has Error')
+          Message.error('Has Error')
           next(`/login?redirect=${to.path}`)
           NProgress.done()
         }
@@ -74,7 +75,6 @@ router.beforeEach(async(to, from, next) => {
 })
 
 function filterAsyncRouter(asyncRouterMap) {
-  console.log(asyncRouterMap)
   const accessedRouters = asyncRouterMap.filter(route => {
     if (route.component) {
       if (route.component === 'Layout') {
